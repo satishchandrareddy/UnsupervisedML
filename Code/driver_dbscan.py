@@ -21,4 +21,7 @@ model.fit(X)
 labels = model.labels_
 plt.scatter(X[:,0], X[:,1], c=labels)
 
+print(f'Number of Clusters: {len(np.unique(labels))}')
+print(f'Number of Core points: {len(model.core_points_)}')
+print(f'Model Hyperparameters: {model.get_params()}')
 plt.show()
