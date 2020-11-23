@@ -38,7 +38,7 @@ class DBSCAN:
 
   def fit(self, X):
     """Train the model."""
-    num_points = len(X)
+    num_points = X.shape[1]
     self.dist_matrix_ = utils.distance_matrix(X, self.dist_func)    # compute pairwise distance between each point
     self.core_points_  = []                   # store indices of core points
     self.labels_ = [None]*num_points          # each entry i in labels_ is the cluster label assigned to point i in dataset
@@ -69,4 +69,3 @@ class DBSCAN:
   def get_params(self):
     """Get the hyperparameters of the model."""
     return {p: getattr(self, p) for p in ['epsilon', 'min_points', 'dist_func']}
-      

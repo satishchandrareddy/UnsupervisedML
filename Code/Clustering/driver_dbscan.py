@@ -17,7 +17,7 @@ dist_func = lambda x1, x2: np.sqrt(np.dot(x1-x2,x1-x2))
 model = dbscan.DBSCAN(epsilon=eps, 
 					min_points=min_pts, 
 					dist_func=dist_func)
-model.fit(X)
+model.fit(X.T)
 labels = model.labels_
 plt.scatter(X[:,0], X[:,1], c=labels)
 
