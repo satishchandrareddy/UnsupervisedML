@@ -18,10 +18,10 @@ model = dbscan.DBSCAN(epsilon=eps,
 					min_points=min_pts, 
 					dist_func=dist_func)
 model.fit(X.T)
-labels = model.labels_
-plt.scatter(X[:,0], X[:,1], c=labels)
 
-print(f'Number of Clusters: {len(np.unique(labels))}')
+print(f'Number of Clusters: {len(np.unique(model.labels_))}')
 print(f'Number of Core points: {len(model.core_points_)}')
 print(f'Model Hyperparameters: {model.get_params()}')
+model.plot_clusters(X.T)
+model.plot_results_animation(X.T)
 plt.show()

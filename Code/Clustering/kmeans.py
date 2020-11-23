@@ -173,5 +173,7 @@ class kmeans:
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
         #ani.save('cluster.mp4', writer='ffmpeg')
+        if notebook:
+            return ani
 
-        return ani
+        plt.show()

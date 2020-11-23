@@ -2,6 +2,12 @@
 
 import numpy as np
 
+col_list = ['blue', 'yellow', 'cyan', 'red',
+            'green', 'purple', 'orange', 'dimgray', 
+            'lawngreen', 'olive', 'magenta', 'skyblue', 'pink'
+]
+col_mapper = {i: c for i,c in enumerate(col_list)}
+
 def distance_matrix(X, dist_func):
   """Compute distance matrix such that entry i,j is the 
     distance between point i and point j
