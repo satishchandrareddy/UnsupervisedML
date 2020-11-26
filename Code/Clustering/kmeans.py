@@ -134,7 +134,7 @@ class kmeans:
             # plot mean points 
             out, = plt.plot(self.meansave[-1][0,cluster],self.meansave[-1][1,cluster],color=list_color[cluster],marker ="s", markersize=8)
 
-    def plot_results_animation(self,X):
+    def plot_results_animation(self,X,notebook=False):
         list_color = ["k", "r", "g", "m", "c"]
         fig,ax = plt.subplots(1,1)
         container = []
