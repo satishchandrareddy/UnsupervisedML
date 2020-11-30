@@ -17,7 +17,9 @@ std = 1
 X,mean = create_data_cluster.create_data_cluster(nfeature,nsample,ncluster,std)
 
 # (2) create model
-model = kmeans.kmeans(ncluster)
+# initialization should be "random" or "kmeans++"
+initialization = "kmeans++"
+model = kmeans.kmeans(ncluster,initialization)
 
 # (3) fit model
 nepoch = 20

@@ -11,7 +11,7 @@ noisy_moons = ds.make_moons(n_samples=n_samples, noise=.08, random_state=0)
 X = noisy_moons[0]
 X = StandardScaler().fit_transform(X)
 
-eps = 0.3
+eps = 0.2
 min_pts = 3
 dist_func = lambda x1, x2: np.sqrt(np.dot(x1-x2,x1-x2))
 model = dbscan.DBSCAN(epsilon=eps, 
