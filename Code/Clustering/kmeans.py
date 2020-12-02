@@ -2,7 +2,6 @@
 # kmeans clustering
 
 from copy import deepcopy
-import create_data_cluster
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
