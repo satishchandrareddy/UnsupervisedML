@@ -9,9 +9,9 @@ import time
 
 # (1) generate data
 # comment out seed line to generate different sets of random numbers
-np.random.seed(21)
+np.random.seed(111)
 nfeature = 2
-nsample = 200
+nsample = 350
 ncluster_data = 3
 std = 1
 X,mean = create_data_cluster.create_data_cluster(nfeature,nsample,ncluster_data,std)
@@ -19,7 +19,7 @@ X,mean = create_data_cluster.create_data_cluster(nfeature,nsample,ncluster_data,
 # loop ovr number of clusters to find
 nsim = 10
 niteration = 20
-ncluster_find = 6
+ncluster_find = 8
 array_objective = []
 for ncluster in range(ncluster_find):
 	mean_objective = 0

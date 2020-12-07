@@ -1,18 +1,20 @@
 # plot_data.py
 
 import matplotlib.pyplot as plt
-
-# this function is not part of the class is used for plottin
+from matplotlib import cm
 
 def plot_data2d(X,**kwargs):
+    # X is 2d numpy array (nfeature x nsample)
+    # kwargs: mean is list of means each (nfeature x 1)
     plt.figure()
-    plt.plot(X[0,:],X[1,:],"bo",markersize=4)
-    symbol = ["ks", "rs", "gs", "cs"]
+    plt.scatter(X[0,:],X[1,:],color=cm.jet(0),marker="o",s=20)
     if "mean" in kwargs:
         mean = kwargs["mean"]
-        ncluster = mean.shape[1]
+        ncluster = len(mean)
+        color_multiplier = 1/ncluster
         for count in range(ncluster):
-            plt.plot(mean[0,count],mean[1,count],symbol[count],markersize=8)
+            color = (count+1)*color_multiplier
+            plt.scatter(mean[count][0,0],mean[count][1,0],color=cm.jet(color),marker="s",s=50)
     plt.xlabel("Relative Salary")
     plt.ylabel("Relative Purchases")
     plt.title("Data")
