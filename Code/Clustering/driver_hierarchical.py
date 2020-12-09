@@ -15,7 +15,7 @@ nsample = 200
 ncluster = 3
 std = 1
 #X,mean = create_data_cluster.create_data_cluster(nfeature,nsample,ncluster,std)
-X = create_data_cluster_sklearn.create_data_cluster(nsample,"aniso")
+X = create_data_cluster_sklearn.create_data_cluster(nsample,"varied_blobs")
 # (2) create model
 model = hierarchical.hierarchical()
 

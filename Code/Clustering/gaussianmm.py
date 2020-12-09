@@ -8,46 +8,57 @@ import normal
 import numpy as np
 
 class gaussianmm:
-    def __init__(self,ncluster):
-        self.clustersave = []
+    def __init__(self,ncluster,initialization="random"):
         self.ncluster = ncluster
+        self.initialization = initialization
+        self.clustersave = []
         self.gammasave = []
-        self.log_likelihood = []
+        self.loglikelihoodsave = []
 
     def initialize_parameters(self):
-        # initialize means by picking data points at random
+        # initialize means, covariances, and weights
         mean = []
-        array_idx = np.random.randint(low=0,high=self.X.shape[1],size=self.ncluster)
-        for count in range(self.ncluster):
-            mean.append(self.X[:,array_idx[count]:array_idx[count]+1])
+        if self.initialization == "kmeans++":
+            idx = np.random.randint(self.X.shape[1])
+            mean.append(self.X[:,idx:idx+1])
+            for count in range(1,self.ncluster):
+                dist = self.compute_distance(self.X,mean)
+                # pick data point whose distance squared from nearest cluster mean is greatest
+                idx = np.argmax(np.min(dist,axis=0))                  
+                mean.append(self.X[:,idx:idx+1])
+        else:
+            array_idx = np.random.randint(low=0,high=self.X.shape[1],size=self.ncluster)
+            for count in range(self.ncluster):
+                mean.append(self.X[:,array_idx[count]:array_idx[count]+1])
+        # store in array
         self.meansave = [mean]
         # initialize weights
-        self.weightsave = [[1/self.ncluster for count in range(self.ncluster)]]
+        self.weightsave = [[1/self.ncluster for _ in range(self.ncluster)]]
         # initialize covariance matrix
-        Xmean = np.mean(self.X,axis=1,keepdims=True)
-        Xmm = self.X-Xmean
+        Xmm = self.X - np.mean(self.X,axis=1,keepdims=True)
         Sigma = np.dot(Xmm,Xmm.T)/self.nsample
-        self.Sigmasave = [[Sigma for count in range(self.ncluster)]]
-        print("mean: {}".format(self.meansave[-1]))
-        print("Sigma: \n{}".format(self.Sigmasave))
-        #print("weight: {}".format(self.weightsave[-1]))
-        # initialize gamma
-        self.update_gamma()
-        # update log_likelihood
-        self.update_log_likelihood() 
-        # determine cluster
-        self.determine_cluster()
+        self.Sigmasave = [[Sigma for _ in range(self.ncluster)]]
 
-    def update_gamma(self):
+    def compute_distance(self,X,list_mean):
+        # compute distance between each sample in X and each mean in cluster
+        dist = np.zeros((len(list_mean),X.shape[1]))
+        # loop over means in list_mean
+        for count in range(len(list_mean)):
+            dist[count,:] = np.sum(np.square(X-list_mean[count]),axis=0)
+        return dist
+
+    def expectation(self):
+        # update gammas
         self.weighted_normal = np.zeros((self.ncluster,self.nsample))
         for k in range(self.ncluster):
             self.weighted_normal[k,:] = self.weightsave[-1][k]*normal.normal_pdf(self.X,self.meansave[-1][k],self.Sigmasave[-1][k])
         self.gammasave.append(deepcopy(self.weighted_normal/np.sum(self.weighted_normal,axis=0,keepdims=True)))
+        # compute log likelihood and save
+        self.loglikelihoodsave.append(np.sum(np.log(np.sum(self.weighted_normal,axis=0))))
+        # determine clusters and save
+        self.determine_cluster()
 
-    def update_log_likelihood(self):
-        self.log_likelihood.append(np.sum(np.log(np.sum(self.weighted_normal,axis=0))))
-
-    def update_parameters(self):
+    def maximization(self):
         # compute number of points in each cluster
         self.N = np.sum(self.gammasave[-1],axis=1)
         # compute mean, Sigma, and weight for each cluster
@@ -63,9 +74,6 @@ class gaussianmm:
         self.meansave.append(list_mean)
         self.weightsave.append(list_weight)
         self.Sigmasave.append(list_Sigma)
-        print("list_weight: {}".format(list_weight))
-        print("list mean: {}".format(list_mean))
-        print("list Sigma: {}".format(list_Sigma))
 
     def compute_diff(self):
         # determine sum of distances between current and previous means
@@ -86,29 +94,25 @@ class gaussianmm:
         self.nsample = X.shape[1]
         # initialize
         self.initialize_parameters()
-        if verbose:
-            print("Initial Log Likelihood: {}".format(self.log_likelihood[-1]))
         diff = 1e+10
         count = 1
         # loop over iteration
         while (count<=niteration and diff>1e-7):
-            # update parameters
-            self.update_parameters()
-            # update gamma, log_likelihood, and cluster
-            self.update_gamma()
-            self.update_log_likelihood()
-            self.determine_cluster()
+            # expectation step
+            self.expectation()
+            # maximization step
+            self.maximization()
             # print results
             if verbose:
-                print("Log Likelihood Function: {}".format(self.log_likelihood[-1]))
+                print("Log Likelihood Function: {}".format(self.loglikelihoodsave[-1]))
             # compute difference:
             diff = self.compute_diff()
             count += 1
 
     def plot_objective(self):
         fig = plt.subplots(1,1)
-        list_iteration = list(range(0,len(self.log_likelihood)))
-        plt.plot(list_iteration,self.log_likelihood,'b-')
+        list_iteration = list(range(0,len(self.loglikelihoodsave)))
+        plt.plot(list_iteration,self.loglikelihoodsave,'b-')
         plt.xlabel("Iteration")
         plt.ylabel("Log Likelihood")
 
@@ -116,8 +120,8 @@ class gaussianmm:
         # plot final clusters and means
         fig,ax = plt.subplots(1,1)
         # plot data points separate color for each cluster
-        ax.set_xlabel("Relative Salary")
-        ax.set_ylabel("Relative Purchases")
+        ax.set_xlabel("X0")
+        ax.set_ylabel("X1")
         ax.set_title("Clusters")
         color_multiplier = 1/(self.ncluster)
         for cluster in range(self.ncluster):
@@ -132,8 +136,8 @@ class gaussianmm:
         fig,ax = plt.subplots(1,1)
         container = []
         original = True
-        ax.set_xlabel("Relative Salary")
-        ax.set_ylabel("Relative Purchases")
+        ax.set_xlabel("X0")
+        ax.set_ylabel("X1")
         ax.set_title("Clusters")
         color_multiplier = 1/self.ncluster
         # loop over iterations

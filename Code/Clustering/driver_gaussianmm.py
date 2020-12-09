@@ -12,12 +12,13 @@ import time
 # comment out seed line to generate different sets of random numbers
 np.random.seed(31)
 nsample = 1000
-case = "aniso"
-ncluster = 3
+case = "noisy_moons"
+ncluster = 2
 #X,mean = create_data_cluster_sklearn.create_data_cluster(nsample,case)
-X = create_data_cluster_sklearn.create_data_cluster(nsample,"aniso")
+X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
 # (2) create model
-model = gaussianmm.gaussianmm(ncluster)
+initialization = "kmeans++"
+model = gaussianmm.gaussianmm(ncluster,initialization)
 # (3) fit model
 niteration = 20
 start = time.time()
@@ -33,5 +34,5 @@ plot_data.plot_data2d(X,mean=model.get_meansave()[0])
 # plot final clusters
 model.plot_cluster(X)
 # animation
-#model.plot_results_animation(X)
+model.plot_results_animation(X)
 plt.show()

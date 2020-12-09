@@ -2,6 +2,7 @@
 
 import matplotlib.pyplot as plt
 from matplotlib import cm
+import numpy as np
 
 def plot_data2d(X,**kwargs):
     # X is 2d numpy array (nfeature x nsample)
@@ -18,3 +19,18 @@ def plot_data2d(X,**kwargs):
     plt.xlabel("Relative Salary")
     plt.ylabel("Relative Purchases")
     plt.title("Data")
+
+def plot_data_mnist(X):
+    # create 5x5 subplot of mnist images
+    nrow = 5
+    ncol = 5
+    npixel_width = 28
+    npixel_height = 28
+    fig,ax = plt.subplots(nrow,ncol,sharex="col",sharey="row")
+    fig.suptitle("Images of Sample MNIST Digits")
+    idx = 0
+    for row in range(nrow):
+        for col in range(ncol):
+            digit_image = np.flipud(np.reshape(X[:,idx],(npixel_width,npixel_height)))
+            ax[row,col].pcolormesh(digit_image,cmap="Greys")
+            idx +=1
