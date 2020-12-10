@@ -1,4 +1,4 @@
-# driver_kmeans.py
+# driver_gaussianmm.py
 
 import create_data_cluster
 import create_data_cluster_sklearn
