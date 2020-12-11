@@ -1,8 +1,9 @@
-# hierarchical.py
+# gaussianmm.py
 
 from copy import deepcopy
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+from matplotlib.patches import Ellipse
 from matplotlib import cm
 import normal
 import numpy as np
@@ -164,15 +165,60 @@ class gaussianmm:
             return ani
         plt.show()
 
+    @staticmethod
+    def draw_ellipse(position, covariance, ax=None, **kwargs):
+        """Draw an ellipse with a given position and covariance"""
+        ax = ax or plt.gca()
+        
+        # Convert covariance to principal axes
+        if covariance.shape == (2, 2):
+            U, s, Vt = np.linalg.svd(covariance)
+            angle = np.degrees(np.arctan2(U[0, 1], U[0, 0]))
+            width, height = 2 * np.sqrt(s)
+        else:
+            angle = 0
+            width, height = 2 * np.sqrt(covariance)
+        
+        # Draw the Ellipse
+        for nsig in range(1, 4):
+            ax.add_patch(Ellipse(position, nsig * width, nsig * height,
+                                 angle, **kwargs))
+        return ax
+
+    def plot_ellipse_animation(self, X, num_frames, notebook=False):
+        def update(frame_num, gmm, X, scat, ax=None):
+            weights = np.array(gmm.weightsave[frame_num])
+            means = np.squeeze(np.array(gmm.meansave[frame_num]))
+            covars = np.array(gmm.Sigmasave[frame_num])
+            ax = ax or plt.gca()
+            ax.clear()
+            labels = gmm.clustersave[frame_num]
+            ax.axis('equal')
+            w_factor = 0.2 / weights.max()
+            for pos, covar, w in zip(means,covars,weights):
+              ax.scatter(X[0,:], X[1,:], c=labels)
+              ax = gmm.draw_ellipse(pos, covar, alpha=w * w_factor)
+                
+            return scat,
+
+        fig = plt.figure()
+        scat = plt.scatter(X[0,:], X[1,:])
+        ani = animation.FuncAnimation(fig=fig, func=update, frames=num_frames, 
+                                fargs=(self, X, scat), interval=500, blit=True)
+        if notebook:
+            return ani
+        plt.show()
+
+
     def plot_cluster_distribution(self, labels, figsize=(12,4)):
-          print(f"Number of Clusters: {self.ncluster}")
-          cluster_labels = self.clustersave[-1]
-          df = pd.DataFrame({'class': labels,
-                            'cluster label': cluster_labels,
-                            'cluster': np.ones(len(labels))})
-          counts = df.groupby(['cluster label', 'class']).sum()
-          fig = counts.unstack(level=0).plot(kind='bar', subplots=True,
-                                            sharey=True, sharex=False,
-                                            layout=(1,self.ncluster), 
-                                            figsize=figsize, legend=False)
-          plt.show()
+        print(f"Number of Clusters: {self.ncluster}")
+        cluster_labels = self.clustersave[-1]
+        df = pd.DataFrame({'class': labels,
+                        'cluster label': cluster_labels,
+                        'cluster': np.ones(len(labels))})
+        counts = df.groupby(['cluster label', 'class']).sum()
+        fig = counts.unstack(level=0).plot(kind='bar', subplots=True,
+                                        sharey=True, sharex=False,
+                                        layout=(1,self.ncluster), 
+                                        figsize=figsize, legend=False)
+        plt.show()

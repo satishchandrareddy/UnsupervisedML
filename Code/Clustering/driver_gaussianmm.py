@@ -33,4 +33,5 @@ plot_data.plot_data2d(X,mean=model.get_meansave()[0])
 model.plot_cluster(X)
 # animation
 model.plot_results_animation(X)
+model.plot_ellipse_animation(X, num_frames=10)
 plt.show()
