@@ -6,6 +6,7 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
+import plot_data
 rcParams.update({'figure.autolayout': True})
 
 # (1) Set up data
@@ -20,10 +21,10 @@ model = kmeans.kmeans(ncluster,initialization)
 # (3) fit model
 nepoch = 20
 start = time.time()
-model.fit(X,nepoch)
+list_objective = model.fit(X,nepoch)
 end = time.time()
 print(f'\n Training time (Kmeans): {end - start}')
 # (4) plot results
-model.plot_objective()
+plot_data.plot_objective(list_objective,title="K Means",xlabel="Iteration",ylabel="Objective")
 model.plot_cluster_distribution(np.squeeze(Y))
 plt.show()

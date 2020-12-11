@@ -5,6 +5,7 @@ import gaussianmm
 import time
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
+import plot_data
 rcParams.update({'figure.autolayout': True})
 
 # (1) load data
@@ -16,10 +17,10 @@ model = gaussianmm.gaussianmm(ncluster,initialization)
 # (3) fit model
 niteration = 20
 start = time.time()
-model.fit(features,niteration)
+list_loglikelihood = model.fit(features,niteration)
 end = time.time()
 print("Training time (gaussianmm): {}".format(end - start))
 # (4) plot results
-model.plot_objective()
+plot_data.plot_objective(list_loglikelihood,title="Iris",xlabel="Iteration",ylabel="Log Likelihood")
 model.plot_cluster_distribution(labels)
 plt.show()

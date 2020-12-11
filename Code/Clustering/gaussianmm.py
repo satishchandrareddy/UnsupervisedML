@@ -111,13 +111,6 @@ class gaussianmm:
             count += 1
         return self.loglikelihoodsave
 
-    def plot_objective(self):
-        fig = plt.subplots(1,1)
-        list_iteration = list(range(0,len(self.loglikelihoodsave)))
-        plt.plot(list_iteration,self.loglikelihoodsave,'b-')
-        plt.xlabel("Iteration")
-        plt.ylabel("Log Likelihood")
-
     def plot_cluster(self,X):
         # plot final clusters and means
         fig,ax = plt.subplots(1,1)
