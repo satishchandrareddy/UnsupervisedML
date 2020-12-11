@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 import normal
 import numpy as np
+import pandas as pd
 
 class gaussianmm:
     def __init__(self,ncluster,initialization="random"):
@@ -169,3 +170,16 @@ class gaussianmm:
         if notebook:
             return ani
         plt.show()
+
+    def plot_cluster_distribution(self, labels, figsize=(12,4)):
+          print(f"Number of Clusters: {self.ncluster}")
+          cluster_labels = self.clustersave[-1]
+          df = pd.DataFrame({'class': labels,
+                            'cluster label': cluster_labels,
+                            'cluster': np.ones(len(labels))})
+          counts = df.groupby(['cluster label', 'class']).sum()
+          fig = counts.unstack(level=0).plot(kind='bar', subplots=True,
+                                            sharey=True, sharex=False,
+                                            layout=(1,self.ncluster), 
+                                            figsize=figsize, legend=False)
+          plt.show()

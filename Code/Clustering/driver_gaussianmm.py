@@ -1,4 +1,4 @@
-# driver_gaussian.py
+# driver_gaussianmm.py
 
 import create_data_cluster_sklearn
 import gaussianmm

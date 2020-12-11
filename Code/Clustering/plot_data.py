@@ -3,6 +3,7 @@
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
+import pandas as pd
 
 def plot_objective(list_data,**kwargs):
         fig = plt.subplots(1,1)
@@ -48,3 +49,5 @@ def plot_data_mnist(X):
             digit_image = np.flipud(np.reshape(X[:,idx],(npixel_width,npixel_height)))
             ax[row,col].pcolormesh(digit_image,cmap="Greys")
             idx +=1
+
+    
