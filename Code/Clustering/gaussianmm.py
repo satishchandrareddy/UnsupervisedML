@@ -170,7 +170,7 @@ class gaussianmm:
             return ani
         plt.show()
 
-    def plot_cluster_distribution(self, labels):
+    def plot_cluster_distribution(self, labels, figsize=(12,4)):
           print(f"Number of Clusters: {self.ncluster}")
           cluster_labels = self.clustersave[-1]
           df = pd.DataFrame({'class': labels,
@@ -180,5 +180,5 @@ class gaussianmm:
           fig = counts.unstack(level=0).plot(kind='bar', subplots=True,
                                             sharey=True, sharex=False,
                                             layout=(1,self.ncluster), 
-                                            figsize=(12,4), legend=False)
+                                            figsize=figsize, legend=False)
           plt.show()
