@@ -1,6 +1,5 @@
-# driver_kmeans.py
+# driver_gaussian.py
 
-import create_data_cluster
 import create_data_cluster_sklearn
 import gaussianmm
 import matplotlib.pyplot as plt
@@ -12,9 +11,8 @@ import time
 # comment out seed line to generate different sets of random numbers
 np.random.seed(31)
 nsample = 1000
-case = "noisy_moons"
-ncluster = 2
-#X,mean = create_data_cluster_sklearn.create_data_cluster(nsample,case)
+case = "aniso"
+ncluster = 3
 X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
 # (2) create model
 initialization = "kmeans++"
@@ -22,11 +20,11 @@ model = gaussianmm.gaussianmm(ncluster,initialization)
 # (3) fit model
 niteration = 20
 start = time.time()
-model.fit(X,niteration)
+list_loglikelihood = model.fit(X,niteration)
 end = time.time()
 print("Training time (gaussianmm): {}".format(end - start))
 # (4) plot results
-model.plot_objective()
+plot_data.plot_objective(list_loglikelihood,title="Gaussian Mixture Model",xlabel="Iteration",ylabel="Log Likelihood")
 # plot initial data
 plot_data.plot_data2d(X)
 # plot initial data with initial means

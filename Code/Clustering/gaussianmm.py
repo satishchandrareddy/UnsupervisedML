@@ -108,6 +108,7 @@ class gaussianmm:
             # compute difference:
             diff = self.compute_diff()
             count += 1
+        return self.loglikelihoodsave
 
     def plot_objective(self):
         fig = plt.subplots(1,1)

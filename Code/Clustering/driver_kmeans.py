@@ -1,6 +1,5 @@
 # driver_kmeans.py
 
-import create_data_cluster
 import create_data_cluster_sklearn
 import kmeans
 import matplotlib.pyplot as plt
@@ -9,29 +8,24 @@ import plot_data
 import time
 
 # (1) generate data
-# comment out seed line to generate different sets of random numbers
-np.random.seed(31)
-nfeature = 2
-nsample = 500
+nsample = 200
 ncluster = 3
-std = 1
-#X,_ = create_data_cluster.create_data_cluster(nfeature,nsample,ncluster,std)
-X = create_data_cluster_sklearn.create_data_cluster(nsample,"varied_blobs")
+X = create_data_cluster_sklearn.create_data_cluster(nsample,"varied_blobs2")
 print("X.shape: {}".format(X.shape))
 # (2) create model
+# Change seed to change random numbers
 # initialization should be "random" or "kmeans++"
+np.random.seed(31)
 initialization = "random"
 model = kmeans.kmeans(ncluster,initialization)
-
 # (3) fit model
 nepoch = 20
 start = time.time()
-model.fit(X,nepoch)
+list_objective = model.fit(X,nepoch)
 end = time.time()
 print(f'\n Training time (Kmeans): {end - start}')
-
 # (4) plot results
-model.plot_objective()
+plot_data.plot_objective(list_objective,title="K Means Clustering",xlabel="Iteration",ylabel="Objective")
 # plot initial data
 plot_data.plot_data2d(X)
 # plot initial data with initial means

@@ -11,11 +11,11 @@ import time
 # (1) generate data
 # comment out seed line to generate different sets of random numbers
 nfeature = 2
-nsample = 200
+nsample = 205
 ncluster = 3
 std = 1
 #X,mean = create_data_cluster.create_data_cluster(nfeature,nsample,ncluster,std)
-X = create_data_cluster_sklearn.create_data_cluster(nsample,"varied_blobs")
+X = create_data_cluster_sklearn.create_data_cluster(nsample,"varied_blobs1")
 # (2) create model
 model = hierarchical.hierarchical()
 

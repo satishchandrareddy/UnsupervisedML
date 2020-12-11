@@ -12,7 +12,7 @@ class kmeans:
         self.ncluster = ncluster
         self.initialization = initialization
         self.clustersave = []
-        self.list_objective = []
+        self.objectivesave = []
 
     def initialize_means(self):
         if self.initialization == 'kmeans++':
@@ -48,8 +48,7 @@ class kmeans:
     def compute_objective(self,dist):
         # compute sum of squares of distance to nearest cluster mean
         objective = np.sum(np.min(dist,axis=0))
-        self.list_objective.append(objective)
-        return objective
+        self.objectivesave.append(objective)
 
     def check_diff(self):
         # determine sum of distances between current and previous means
@@ -83,26 +82,19 @@ class kmeans:
             dist = self.compute_distance(self.X,self.mean)
             # determine cluster
             self.determine_cluster(dist)
-            objective = self.compute_objective(dist)
+            self.compute_objective(dist)
             if verbose:
-                print("Iteration: {}  Objective Function: {}".format(i,objective))
+                print("Iteration: {}  Objective Function: {}".format(i,self.objectivesave[-1]))
             # update_mean
             self.update_mean()
             diff = self.check_diff()
-        return objective
+        return self.objectivesave
 
     def get_mean(self):
         return self.mean
 
     def get_meansave(self):
         return self.meansave
-
-    def plot_objective(self):
-        fig = plt.subplots(1,1)
-        list_iteration = list(range(0,len(self.list_objective)))
-        plt.plot(list_iteration,self.list_objective,'b-')
-        plt.xlabel("Iteration")
-        plt.ylabel("Objective Function")
 
     def plot_cluster(self,X):
         # plot final clusters and means
@@ -116,7 +108,7 @@ class kmeans:
             # plot cluster data
             idx = np.squeeze(np.where(np.absolute(self.clustersave[-1] - cluster)<1e-7))
             color = color_multiplier*(cluster+1)
-            clusterdata = plt.scatter(X[0,idx],X[1,idx],color=cm.jet(color),marker="o",s=20)
+            clusterdata = plt.scatter(X[0,idx],X[1,idx],color=cm.jet(color),marker="o",s=15)
             # plot mean points 
             mean = plt.scatter(self.meansave[-1][cluster][0,0],self.meansave[-1][cluster][1,0],color=cm.jet(color),marker ="s", s=50)
 
@@ -140,7 +132,7 @@ class kmeans:
                 for cluster in range(self.ncluster):
                     color = color_multiplier*(cluster+1)
                     idx = np.squeeze(np.where(np.absolute(self.clustersave[count-1] - cluster)<1e-7))
-                    clusterdata = plt.scatter(X[0,idx],X[1,idx],color=cm.jet(color),marker="o",s=20)
+                    clusterdata = plt.scatter(X[0,idx],X[1,idx],color=cm.jet(color),marker="o",s=15)
                     frame.append(clusterdata)
             container.append(frame)
             # plot mean points ----- use separate frame

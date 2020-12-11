@@ -18,14 +18,17 @@ def create_data_cluster(n_samples,case):
 		X,y = datasets.make_moons(n_samples=n_samples, noise=.05)
 	elif case == "blobs":
 		X,y = datasets.make_blobs(n_samples=n_samples, random_state=8)
-	elif case == "varied_blobs":
+	elif case == "varied_blobs1":
 		random_state = 170
 		X,y = datasets.make_blobs(n_samples=n_samples,cluster_std=[1.0, 2.5, 0.5], random_state=random_state)
+	elif case == "varied_blobs2":
+		random_state = 170
+		X,y = datasets.make_blobs(n_samples=n_samples,cluster_std=[1.5, 2.5, 0.8], random_state=random_state)
 	return X.T
 
 if __name__ =="__main__":
 	nsample = 1500
-	case = "varied_blobs"
+	case = "varied_blobs1"
 	X = create_data_cluster(nsample,case)
 	print("X.shape: {}".format(X.shape))
 	plot_data.plot_data2d(X)
