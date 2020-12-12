@@ -209,7 +209,6 @@ class gaussianmm:
             return ani
         plt.show()
 
-
     def plot_cluster_distribution(self, labels, figsize=(12,4)):
         print(f"Number of Clusters: {self.ncluster}")
         cluster_labels = self.clustersave[-1]
