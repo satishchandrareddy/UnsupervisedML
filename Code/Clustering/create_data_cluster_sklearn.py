@@ -23,13 +23,13 @@ def create_data_cluster(n_samples,case):
 		X,y = datasets.make_blobs(n_samples=n_samples,cluster_std=[1.0, 2.5, 0.5], random_state=random_state)
 	elif case == "varied_blobs2":
 		random_state = 170
-		X,y = datasets.make_blobs(n_samples=n_samples,cluster_std=[1.5, 2.5, 0.8], random_state=random_state)
+		X,y = datasets.make_blobs(n_samples=n_samples,cluster_std=[1.5, 2.5, 1.0], random_state=random_state)
+	print("Number of dimensions: {} Number of Samples: {}".format(X.shape[1],X.shape[0]))
 	return X.T
 
 if __name__ =="__main__":
 	nsample = 1500
 	case = "varied_blobs1"
 	X = create_data_cluster(nsample,case)
-	print("X.shape: {}".format(X.shape))
-	plot_data.plot_data2d(X)
+	plot_data.plot_data2d(X,title="Data")
 	plt.show()

@@ -78,7 +78,6 @@ class kmeans:
         diff = 10
         i = 0
         while (i< niteration) and (diff>1e-7):
-            i += 1
             # compute distances to all cluster means
             dist = self.compute_distance(self.X,self.mean)
             # determine cluster
@@ -89,6 +88,7 @@ class kmeans:
             # update_mean
             self.update_mean()
             diff = self.check_diff()
+            i += 1
         return self.objectivesave
 
     def get_mean(self):
@@ -97,13 +97,13 @@ class kmeans:
     def get_meansave(self):
         return self.meansave
 
-    def plot_cluster(self,X):
+    def plot_cluster(self,X,**kwargs):
         # plot final clusters and means
         fig,ax = plt.subplots(1,1)
         # plot data points separate color for each cluster
-        ax.set_xlabel("Relative Salary")
-        ax.set_ylabel("Relative Purchases")
-        ax.set_title("Clusters")
+        #ax.set_xlabel("Relative Salary")
+        #ax.set_ylabel("Relative Purchases")
+        ax.set_title("Clusters and Means")
         color_multiplier = 1/(self.ncluster)
         for cluster in range(self.ncluster):
             # plot cluster data
@@ -117,9 +117,9 @@ class kmeans:
         fig,ax = plt.subplots(1,1)
         container = []
         original = True
-        ax.set_xlabel("Relative Salary")
-        ax.set_ylabel("Relative Purchases")
-        ax.set_title("Clusters")
+        #ax.set_xlabel("Relative Salary")
+        #ax.set_ylabel("Relative Purchases")
+        ax.set_title("Evolution of Clusters and Means")
         color_multiplier = 1/self.ncluster
         # loop over iterations
         for count in range(len(self.meansave)):
@@ -142,10 +142,10 @@ class kmeans:
                 mean = plt.scatter(self.meansave[count][cluster][0,0],self.meansave[count][cluster][1,0],color=cm.jet(color),marker ="s",s=50)
                 frame.append(mean)
             container.append(frame)
-        ani = animation.ArtistAnimation(fig,container, repeat = False, interval=350, blit=True)
+        ani = animation.ArtistAnimation(fig,container, repeat = False, interval=1000, blit=True)
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
-        #ani.save('cluster.mp4', writer='ffmpeg')
+        ani.save('kmeans.mp4', writer='ffmpeg')
         if notebook:
             return ani
         plt.show()

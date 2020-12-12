@@ -5,10 +5,9 @@ from matplotlib import cm
 import numpy as np
 import pandas as pd
 
-def plot_objective(list_data,**kwargs):
+def plot_objective(list_x,list_y,**kwargs):
         fig = plt.subplots(1,1)
-        list_iteration = list(range(0,len(list_data)))
-        plt.plot(list_iteration,list_data,'b-')
+        plt.plot(list_x,list_y,'b-',marker="o",markersize=5)
         if "title" in kwargs:
             plt.title(kwargs["title"])
         if "xlabel" in kwargs:

@@ -20,7 +20,7 @@ class hierarchical:
         ncluster = len(cluster_list)
         cluster1 = None
         cluster2 = None
-        cluster_dist = 1e10
+        cluster_dist = 1e100
         for count1 in range(ncluster-1):
             for count2 in range(count1+1,ncluster):
                 if (len(cluster_list[count1])>0) and (len(cluster_list[count2])>0):
@@ -55,8 +55,8 @@ class hierarchical:
         # plot final clusters and means
         fig,ax = plt.subplots(1,1)
         # plot data points separate color for each cluster
-        ax.set_xlabel("Relative Salary")
-        ax.set_ylabel("Relative Purchases")
+        #ax.set_xlabel("Relative Salary")
+        #ax.set_ylabel("Relative Purchases")
         ax.set_title("Clusters")
         cluster_list = self.clustersave[-ncluster]
         nsample = len(cluster_list)
@@ -72,9 +72,9 @@ class hierarchical:
 
     def plot_animation(self,ncluster_final=1,notebook=False):
         fig,ax = plt.subplots(1,1)
-        ax.set_xlabel("Relative Salary")
-        ax.set_ylabel("Relative Purchases")
-        ax.set_title("Clusters")
+        #ax.set_xlabel("Relative Salary")
+        #ax.set_ylabel("Relative Purchases")
+        ax.set_title("Evolution of Clusters")
         nframe = len(self.clustersave)
         container = []
         for frame in range(nframe+1-ncluster_final):
@@ -90,6 +90,9 @@ class hierarchical:
                     image.append(plt.scatter(self.X[0,idx],self.X[1,idx],color=cm.jet(color),marker="o"))
             image.append(plt.scatter(self.X[0,idx1],self.X[1,idx1],color=cm.jet(0),marker="o"))
             container.append(image)
-        ani = animation.ArtistAnimation(fig,container, repeat_delay=5000, repeat = False, interval=200, blit=True)
+        ani = animation.ArtistAnimation(fig,container, repeat_delay=5000, repeat = False, interval=100, blit=True)
+        # uncomment to create mp4 
+        # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
+        ani.save('hierarchical.mp4', writer='ffmpeg')
         if notebook:
             return ani

@@ -1,6 +1,6 @@
 # driver_kmeans.py
 
-import create_data_cluster
+import create_data_cluster_sklearn
 import kmeans
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,15 +8,12 @@ import plot_data
 import time
 
 # (1) generate data
+nsample = 300
+case = "varied_blobs2"
+X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
 # comment out seed line to generate different sets of random numbers
-np.random.seed(111)
-nfeature = 2
-nsample = 350
-ncluster_data = 3
-std = 1
-X,mean = create_data_cluster.create_data_cluster(nfeature,nsample,ncluster_data,std)
-
 # loop ovr number of clusters to find
+np.random.seed(31)
 nsim = 10
 niteration = 20
 ncluster_find = 8
@@ -25,16 +22,13 @@ for ncluster in range(ncluster_find):
 	mean_objective = 0
 	for sim in range(nsim):
 		model = kmeans.kmeans(ncluster+1,"kmeans++")
-		mean_objective += model.fit(X,niteration,False)/nsim
+		list_objective = model.fit(X,niteration,verbose=False)
+		mean_objective += list_objective[-1]/nsim 
 	print("Number of Clusters: {}   Mean Objective: {}".format(ncluster+1,mean_objective))
 	array_objective.append(mean_objective)
-
-# plot results
-array_ncluster = [count+1 for count in range(ncluster_find)]
+# plot data
 plot_data.plot_data2d(X)
-plt.figure()
-plt.plot(array_ncluster,array_objective,marker="o",markersize=5)
-plt.xlabel("Number of clusters")
-plt.ylabel("Objective Function")
-plt.title("K Means Elbow Analysis")
+# plot objective as function of clusters
+plot_data.plot_objective([count+1 for count in range(0,ncluster_find)],array_objective,
+	title="K Means Elbow Analysis",xlabel="Number of Clusters",ylabel="Objective Function")
 plt.show()

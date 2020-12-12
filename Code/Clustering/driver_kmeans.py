@@ -8,28 +8,28 @@ import plot_data
 import time
 
 # (1) generate data
-nsample = 200
+nsample = 300
 ncluster = 3
 X = create_data_cluster_sklearn.create_data_cluster(nsample,"varied_blobs2")
-print("X.shape: {}".format(X.shape))
 # (2) create model
 # Change seed to change random numbers
 # initialization should be "random" or "kmeans++"
 np.random.seed(31)
-initialization = "random"
+initialization = "kmeans++"
 model = kmeans.kmeans(ncluster,initialization)
 # (3) fit model
 nepoch = 20
 start = time.time()
 list_objective = model.fit(X,nepoch)
 end = time.time()
-print(f'\n Training time (Kmeans): {end - start}')
+print("Training time (Kmeans): ".format(end - start))
 # (4) plot results
-plot_data.plot_objective(list_objective,title="K Means Clustering",xlabel="Iteration",ylabel="Objective")
+plot_data.plot_objective(list(range(len(list_objective))),list_objective,
+	title="K Means Clustering",xlabel="Iteration",ylabel="Objective")
 # plot initial data
-plot_data.plot_data2d(X)
+plot_data.plot_data2d(X,title="Cluster Data")
 # plot initial data with initial means
-plot_data.plot_data2d(X,mean=model.get_meansave()[0])
+plot_data.plot_data2d(X,mean=model.get_meansave()[0],title="Cluster Data and Initial Means")
 # plot final clusters
 model.plot_cluster(X)
 # animation
