@@ -24,7 +24,7 @@ list_loglikelihood = model.fit(X,niteration)
 end = time.time()
 print("Training time (gaussianmm): {}".format(end - start))
 # (4) plot results
-plot_data.plot_objective([count+1 for count in range(0,ncluster_find)],list_loglikelihood,
+plot_data.plot_objective([count for count in range(0,len(list_loglikelihood))],list_loglikelihood,
 	title="Gaussian Mixture Model",xlabel="Iteration",ylabel="Log Likelihood")
 # plot initial data
 plot_data.plot_data2d(X)
