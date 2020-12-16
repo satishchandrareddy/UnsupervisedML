@@ -34,5 +34,15 @@ plot_data.plot_data2d(X,mean=model.get_meansave()[0])
 model.plot_cluster(X)
 # animation
 model.plot_results_animation(X)
-model.plot_ellipse_animation(X, num_frames=10)
+# plot_data.plot_objective([count+1 for count in range(0,ncluster_find)],list_loglikelihood,
+# 	title="Gaussian Mixture Model",xlabel="Iteration",ylabel="Log Likelihood")
+# # # plot initial data
+# plot_data.plot_data2d(X)
+# # plot initial data with initial means
+# plot_data.plot_data2d(X,mean=model.get_meansave()[0])
+# # plot final clusters
+# model.plot_cluster(X)
+# # animation
+# model.plot_results_animation(X)
+# model.plot_ellipse_animation(X, num_frames=10)
 plt.show()
