@@ -11,7 +11,7 @@ import time
 # comment out seed line to generate different sets of random numbers
 np.random.seed(31)
 nsample = 1000
-case = "aniso"
+case = "varied_blobs1"
 ncluster = 3
 X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
 # (2) create model

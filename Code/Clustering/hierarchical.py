@@ -93,6 +93,6 @@ class hierarchical:
         ani = animation.ArtistAnimation(fig,container, repeat_delay=5000, repeat = False, interval=100, blit=True)
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
-        ani.save('hierarchical.mp4', writer='ffmpeg')
+        #ani.save('hierarchical.mp4', writer='ffmpeg')
         if notebook:
             return ani
