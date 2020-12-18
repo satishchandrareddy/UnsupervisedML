@@ -7,7 +7,10 @@ def silhouette(i, X, cluster_labels, dist_func):
     # calculate avg distance between X_i and every other point in its cluster
     cluster_label = cluster_labels[i]
     cluster_i = np.squeeze(np.argwhere(cluster_labels == cluster_label))
-    a_i = np.sum([dist_func(X[:,i], X[:,j]) for j in cluster_i]) / (len(cluster_i)-1)
+    C_i = len(cluster_i)
+    if C_i == 1:
+        return 0
+    a_i = np.sum([dist_func(X[:,i], X[:,j]) for j in cluster_i]) / (C_i-1)
     # calculate avg distance between X_i and every other point in its closest cluster
     min_dist = float('inf')
     k = None
