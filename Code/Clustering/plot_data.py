@@ -21,12 +21,11 @@ def plot_data2d(X,**kwargs):
     plt.figure()
     plt.scatter(X[0,:],X[1,:],color=cm.jet(0),marker="o",s=15)
     if "mean" in kwargs:
-        mean = kwargs["mean"]
-        ncluster = len(mean)
-        color_multiplier = 1/ncluster
-        for count in range(ncluster):
-            color = (count+1)*color_multiplier
-            plt.scatter(mean[count][0,0],mean[count][1,0],color=cm.jet(color),marker="s",s=50)
+        list_mean = kwargs["mean"]
+        ncluster = len(list_mean)
+        color = np.arange(1,ncluster+1)/ncluster
+        array_mean = np.concatenate(tuple(list_mean),axis=1)
+        plt.scatter(array_mean[0,:],array_mean[1,:],color=cm.jet(color),marker="s",s=50)
     if "title" in kwargs:
         plt.title(kwargs["title"])
     if "xlabel" in kwargs:

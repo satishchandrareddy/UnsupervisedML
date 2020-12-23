@@ -81,7 +81,7 @@ class gaussianmm:
         # determine sum of distances between current and previous means
         diff = 0
         for k in range(self.ncluster):
-            diff += np.sqrt(np.sum(np.square(self.meansave[-1][k]-self.meansave[-2][k])))
+            diff = max(diff,np.sqrt(np.sum(np.square(self.meansave[-1][k]-self.meansave[-2][k]))))
         return diff
 
     def determine_cluster(self):
@@ -91,7 +91,7 @@ class gaussianmm:
     def get_meansave(self):
         return self.meansave
 
-    def fit(self,X,niteration,verbose=True):
+    def fit(self,X,niteration,tolerance=1e-5,verbose=True):
         self.X = X
         self.nsample = X.shape[1]
         # initialize
@@ -99,112 +99,72 @@ class gaussianmm:
         diff = 1e+10
         count = 1
         # loop over iteration
-        while (count<=niteration and diff>1e-7):
+        while (count<=niteration and diff>tolerance):
             # expectation step
             self.expectation()
             # maximization step
             self.maximization()
             # print results
             if verbose:
-                print("Log Likelihood Function: {}".format(self.loglikelihoodsave[-1]))
+                print("Iteration: {} - Log Likelihood Function: {}".format(count,self.loglikelihoodsave[-1]))
             # compute difference:
             diff = self.compute_diff()
             count += 1
         return self.loglikelihoodsave
 
-    def plot_cluster(self,X):
+    def plot_cluster(self):
         # plot final clusters and means
         fig,ax = plt.subplots(1,1)
-        # plot data points separate color for each cluster
-        ax.set_xlabel("X0")
-        ax.set_ylabel("X1")
-        ax.set_title("Clusters")
-        color_multiplier = 1/(self.ncluster)
+        ax.set_title("Clusters and Gaussians")
+        array_color_data = (1+self.clustersave[-1])/self.ncluster
+        scatter_data = plt.scatter(self.X[0,:],self.X[1,:], color=cm.jet(array_color_data), marker="o", s=15)
+        # plot Gaussian footprints
         for cluster in range(self.ncluster):
-            # plot cluster data
-            idx = np.squeeze(np.where(np.absolute(self.clustersave[-1] - cluster)<1e-7))
-            color = color_multiplier*(cluster+1)
-            clusterdata = plt.scatter(X[0,idx],X[1,idx],color=cm.jet(color),marker="o",s=20)
-            # plot mean points 
-            mean = plt.scatter(self.meansave[-1][cluster][0,0],self.meansave[-1][cluster][1,0],color=cm.jet(color),marker ="s", s=50)
+            mean, width, height, angle = normal.create_ellipse_patch_details(self.meansave[-1][cluster],self.Sigmasave[-1][cluster],self.weightsave[-1][cluster])
+            ell = Ellipse(xy=mean, width=width, height=height, angle=angle, color=cm.jet((cluster+1)/self.ncluster), alpha=0.5)
+            ax.add_patch(ell)
 
     def plot_results_animation(self,X,notebook=False):
         fig,ax = plt.subplots(1,1)
-        container = []
-        original = True
-        ax.set_xlabel("X0")
-        ax.set_ylabel("X1")
-        ax.set_title("Clusters")
-        color_multiplier = 1/self.ncluster
-        # loop over iterations
-        for count in range(len(self.meansave)):
-            # plot data points ----- use separate frame
-            frame = []
-            if original: # plot original data points in a single colour
-                original = False
-                originaldata = plt.scatter(X[0,:],X[1,:],color=cm.jet(0),marker="o",s=20)
-                frame.append(originaldata)
-            else: # plot points for each cluster in separate colour
-                for cluster in range(self.ncluster):
-                    color = color_multiplier*(cluster+1)
-                    idx = np.squeeze(np.where(np.absolute(self.clustersave[count-1] - cluster)<1e-7))
-                    clusterdata = plt.scatter(X[0,idx],X[1,idx],color=cm.jet(color),marker="o",s=20)
-                    frame.append(clusterdata)
-            container.append(frame)
-            # plot mean points ----- use separate frame
-            for cluster in range(self.ncluster):
-                color = color_multiplier*(cluster+1)
-                mean = plt.scatter(self.meansave[count][cluster][0,0],self.meansave[count][cluster][1,0],color=cm.jet(color),marker ="s",s=50)
-                frame.append(mean)
-            container.append(frame)
-        ani = animation.ArtistAnimation(fig,container, repeat = False, interval=350, blit=True)
+        ax.set_title("Evolution of Clusters")
+        # create dummy ellipse containers
+        list_object = []
+        for cluster in range(self.ncluster):
+            ell = Ellipse(xy=np.array([0,0]), width=1, height=1, angle=0, color=cm.jet((cluster+1)/self.ncluster), alpha=0.5, visible=False)
+            list_object.append(ell)
+            ax.add_patch(ell)
+        # scatter plot of data
+        scat = ax.scatter(X[0,:], X[1,:], color = cm.jet(0), marker="o", s=15)
+        list_object.append(scat)
+
+        def init():
+            global list_object
+            list_object[-1].scatter(X[0,:], X[1,:], color = cm.jet(0), marker="o", s=15)
+            return list_object
+
+        def update(i,list_object,clustersave,meansave,Covsave,weightsave):
+            # update ellipse details for each cluster
+            nellipse = len(list_object)-1
+            for cluster in range(nellipse):
+                mean, width, height, angle = normal.create_ellipse_patch_details(meansave[i][cluster],
+                    Covsave[i][cluster],weightsave[i][cluster])
+                list_object[cluster].set_center(mean)
+                list_object[cluster].width = width
+                list_object[cluster].height = height
+                list_object[cluster].angle = angle
+                list_object[cluster].set_visible(True)
+            if i == 0:
+                list_object[-1].set_color(cm.jet(0))
+            else:
+                list_object[-1].set_color(cm.jet((np.squeeze(clustersave[i])+1)/(nellipse)))
+            return list_object
+
+        ani = animation.FuncAnimation(fig=fig, func=update, frames = len(self.clustersave),
+            fargs=[list_object,self.clustersave,self.meansave,self.Sigmasave,self.weightsave],
+            repeat_delay=1000, repeat=True, interval=1000, blit=True)
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
-        #ani.save('cluster.mp4', writer='ffmpeg')
-        if notebook:
-            return ani
-        plt.show()
-
-    @staticmethod
-    def draw_ellipse(position, covariance, ax=None, **kwargs):
-        """Draw an ellipse with a given position and covariance"""
-        ax = ax or plt.gca()
-        
-        # Convert covariance to principal axes
-        if covariance.shape == (2, 2):
-            U, s, Vt = np.linalg.svd(covariance)
-            angle = np.degrees(np.arctan2(U[0, 1], U[0, 0]))
-            width, height = 2 * np.sqrt(s)
-        else:
-            angle = 0
-            width, height = 2 * np.sqrt(covariance)
-        
-        # Draw the Ellipse
-        for nsig in range(1, 4):
-            ax.add_patch(Ellipse(position, nsig * width, nsig * height,
-                                 angle, **kwargs))
-        return ax
-
-    def plot_ellipse_animation(self, X, num_frames, notebook=False):
-        def update(frame_num, gmm, X, scat, ax=None):
-            weights = np.array(gmm.weightsave[frame_num])
-            means = np.squeeze(np.array(gmm.meansave[frame_num]))
-            covars = np.array(gmm.Sigmasave[frame_num])
-            ax = ax or plt.gca()
-            ax.clear()
-            labels = gmm.clustersave[frame_num]
-            ax.axis('equal')
-            w_factor = 0.2 / weights.max()
-            for pos, covar, w in zip(means,covars,weights):
-              ax.scatter(X[0,:], X[1,:], c=labels)
-              ax = gmm.draw_ellipse(pos, covar, alpha=w * w_factor)
-                
-            return scat,
-
-        fig = plt.figure()
-        scat = plt.scatter(X[0,:], X[1,:])
-        ani = animation.FuncAnimation(fig=fig, func=update, frames=num_frames, 
-                                fargs=(self, X, scat), interval=500, blit=True)
+        ani.save('cluster.mp4', writer='ffmpeg')
         if notebook:
             return ani
         plt.show()

@@ -1,27 +1,33 @@
-# driver_dbscan.py
+# driver_dbscansr.py
 
+import create_data_cluster_sklearn
 import dbscan
-import numpy as np
-import sklearn.datasets as ds
-from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
+import numpy as np
+import plot_data
+import time
 
-n_samples = 500
-noisy_moons = ds.make_moons(n_samples=n_samples, noise=.08, random_state=0)
-X = noisy_moons[0]
-X = StandardScaler().fit_transform(X)
+# (1) generate data
+np.random.seed(31)
+nsample = 500
+case = "noisy_moons"
+X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
+# (2) create model
+minpts = 3
+epsilon = 0.2
+model = dbscan.dbscan(minpts,epsilon)
+# (3) fit model
+start = time.time()
+model.fit(X)
+end = time.time()
+print("Training time (DBScan): {}".format(end-start))
 
-eps = 0.2
-min_pts = 3
-dist_func = lambda x1, x2: np.sqrt(np.dot(x1-x2,x1-x2))
-model = dbscan.DBSCAN(epsilon=eps, 
-					min_points=min_pts, 
-					dist_func=dist_func)
-model.fit(X.T)
-
-print(f'Number of Clusters: {len(np.unique(model.labels_))}')
-print(f'Number of Core points: {len(model.core_points_)}')
-print(f'Model Hyperparameters: {model.get_params()}')
-model.plot_clusters(X.T)
-model.plot_results_animation(X.T)
+# (4) plot results
+ncluster = 3
+# plot initial data
+model.plot_cluster(0)
+# plot final clusters
+model.plot_cluster(-1)
+# plot animation
+model.plot_animation(1)
 plt.show()

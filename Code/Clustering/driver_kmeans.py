@@ -16,7 +16,7 @@ X = create_data_cluster_sklearn.create_data_cluster(nsample,"varied_blobs2")
 # Change seed to change random numbers
 # initialization should be "random" or "kmeans++"
 np.random.seed(31)
-initialization = "kmeans++"
+initialization = "random"
 model = kmeans.kmeans(ncluster,initialization)
 # (3) fit model
 nepoch = 20
@@ -36,7 +36,7 @@ plot_data.plot_data2d(X,title="Cluster Data")
 # plot initial data with initial means
 plot_data.plot_data2d(X,mean=model.get_meansave()[0],title="Cluster Data and Initial Means")
 # plot final clusters
-model.plot_cluster(X)
+model.plot_cluster()
 # animation
 model.plot_results_animation(X)
 plt.show()

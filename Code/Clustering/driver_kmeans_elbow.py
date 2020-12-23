@@ -12,7 +12,7 @@ nsample = 300
 case = "varied_blobs2"
 X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
 # comment out seed line to generate different sets of random numbers
-# loop ovr number of clusters to find
+# loop over number of clusters to find
 np.random.seed(31)
 nsim = 10
 niteration = 20
@@ -22,7 +22,7 @@ for ncluster in range(ncluster_find):
 	mean_objective = 0
 	for sim in range(nsim):
 		model = kmeans.kmeans(ncluster+1,"kmeans++")
-		list_objective = model.fit(X,niteration,verbose=False)
+		list_objective = model.fit(X,niteration,tolerance=1e-5,verbose=False)
 		mean_objective += list_objective[-1]/nsim 
 	print("Number of Clusters: {}   Mean Objective: {}".format(ncluster+1,mean_objective))
 	array_objective.append(mean_objective)

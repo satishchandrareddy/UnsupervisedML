@@ -21,6 +21,6 @@ list_loglikelihood = model.fit(features,niteration)
 end = time.time()
 print("Training time (gaussianmm): {}".format(end - start))
 # (4) plot results
-plot_data.plot_objective(list_loglikelihood,title="Iris",xlabel="Iteration",ylabel="Log Likelihood")
+plot_data.plot_objective(list(range(len(list_loglikelihood))),list_loglikelihood,title="Iris",xlabel="Iteration",ylabel="Log Likelihood")
 model.plot_cluster_distribution(labels)
 plt.show()
