@@ -23,11 +23,10 @@ end = time.time()
 print("Training time (DBScan): {}".format(end-start))
 
 # (4) plot results
-ncluster = 3
 # plot initial data
-model.plot_cluster(0)
+plot_data.plot_data2d(X,title="Cluster Data")
 # plot final clusters
-model.plot_cluster(-1)
+model.plot_cluster()
 # plot animation
-model.plot_animation(1)
+model.plot_animation()
 plt.show()

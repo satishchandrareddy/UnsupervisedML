@@ -13,11 +13,12 @@ class gaussianmm:
     def __init__(self,ncluster,initialization="random"):
         self.ncluster = ncluster
         self.initialization = initialization
-        self.clustersave = []
         self.gammasave = []
         self.loglikelihoodsave = []
 
     def initialize_parameters(self):
+        # initial clusters:
+        self.clustersave = [(-1)*np.ones((self.nsample))]
         # initialize means, covariances, and weights
         mean = []
         if self.initialization == "kmeans++":
@@ -153,9 +154,6 @@ class gaussianmm:
                 list_object[cluster].height = height
                 list_object[cluster].angle = angle
                 list_object[cluster].set_visible(True)
-            if i == 0:
-                list_object[-1].set_color(cm.jet(0))
-            else:
                 list_object[-1].set_color(cm.jet((np.squeeze(clustersave[i])+1)/(nellipse)))
             return list_object
 

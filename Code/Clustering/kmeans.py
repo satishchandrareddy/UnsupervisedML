@@ -12,10 +12,10 @@ class kmeans:
     def __init__(self,ncluster, initialization='random'):
         self.ncluster = ncluster
         self.initialization = initialization
-        self.clustersave = []
         self.objectivesave = []
 
     def initialize_means(self):
+        self.clustersave = [(-1)*np.ones((self.nsample))]
         if self.initialization == 'kmeans++':
             # use k means ++ approach
             idx = np.random.randint(self.X.shape[1])
@@ -43,8 +43,8 @@ class kmeans:
 
     def determine_cluster(self,dist):
         # determine cluster index for each point in data set and return objective function value
-        self.cluster = np.argmin(dist,axis=0)
-        self.clustersave.append(deepcopy(self.cluster))
+        #self.cluster = np.argmin(dist,axis=0)
+        self.clustersave.append(np.argmin(dist,axis=0))
 
     def compute_objective(self,dist):
         # compute sum of squares of distance to nearest cluster mean
@@ -62,7 +62,7 @@ class kmeans:
         # loop over cluster
         for count in range(self.ncluster):
             # find points that are closest to current cluster mean
-            idx = np.squeeze(np.where(np.absolute(self.cluster-count)<1e-7))
+            idx = np.squeeze(np.where(np.absolute(self.clustersave[-1]-count)<1e-7))
             # compute mean of points and save in list
             if np.size(idx)==1:
                 self.mean[count] = self.X[:,idx:idx+1]
@@ -73,13 +73,14 @@ class kmeans:
 
     def fit(self,X,niteration,tolerance=1e-5,verbose=True):
         self.X = X
+        self.nsample = X.shape[1]
         self.initialize_means()
         # iterate to find cluster points
         diff = 10
         i = 0
-        while (i< niteration) and (diff>1e-7):
+        while (i< niteration) and (diff>tolerance):
             # compute distances to all cluster means
-            dist = self.compute_distance(self.X,self.mean)
+            dist = self.compute_distance(self.X,self.meansave[-1])
             # determine cluster
             self.determine_cluster(dist)
             self.compute_objective(dist)
@@ -90,9 +91,6 @@ class kmeans:
             diff = self.compute_diff()
             i += 1
         return self.objectivesave
-
-    def get_mean(self):
-        return self.mean
 
     def get_meansave(self):
         return self.meansave
@@ -110,26 +108,19 @@ class kmeans:
         scatter_data = plt.scatter(self.X[0,:],self.X[1,:], color=cm.jet(array_color_data), marker="o", s=15)
         scatter_mean = plt.scatter(array_mean[0,:],array_mean[1,:],color=cm.jet(array_color_mean), marker = "s", s=50)
 
-    def plot_results_animation(self,X,notebook=False):
+    def plot_results_animation(self,notebook=False):
         fig,ax = plt.subplots(1,1)
         container = []
-        original = True
         #ax.set_xlabel("Relative Salary")
         #ax.set_ylabel("Relative Purchases")
         ax.set_title("Evolution of Clusters and Means")
-        color_multiplier = 1/self.ncluster
         # loop over iterations
         for count in range(len(self.meansave)):
             # plot data points ----- use separate frame
             frame = []
-            if original: # plot original data points in a single colour
-                original = False
-                originaldata = plt.scatter(X[0,:],X[1,:],color=cm.jet(0),marker="o",s=20)
-                frame.append(originaldata)
-            else: # plot points for each cluster in separate colour
-                array_color = (self.clustersave[count-1]+1)/self.ncluster
-                clusterdata = plt.scatter(X[0,:],X[1,:],color=cm.jet(array_color),marker="o",s=15)
-                frame.append(clusterdata)
+            array_color = (self.clustersave[count]+1)/self.ncluster
+            clusterdata = plt.scatter(self.X[0,:],self.X[1,:],color=cm.jet(array_color),marker="o",s=15)
+            frame.append(clusterdata)
             container.append(frame)
             # plot mean points ----- use separate frame
             array_color = np.arange(1,self.ncluster+1)/self.ncluster

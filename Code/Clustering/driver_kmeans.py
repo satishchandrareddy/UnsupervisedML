@@ -38,5 +38,5 @@ plot_data.plot_data2d(X,mean=model.get_meansave()[0],title="Cluster Data and Ini
 # plot final clusters
 model.plot_cluster()
 # animation
-model.plot_results_animation(X)
+model.plot_results_animation()
 plt.show()
