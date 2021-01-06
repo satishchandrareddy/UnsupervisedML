@@ -19,22 +19,22 @@ np.random.seed(31)
 initialization = "random"
 model = kmeans.kmeans(ncluster,initialization)
 # (3) fit model
-nepoch = 20
+niteration = 20
 start = time.time()
-list_objective = model.fit(X,nepoch)
+list_objective = model.fit(X,niteration)
 end = time.time()
 print("Training time (Kmeans): ".format(end - start))
 cluster_labels = model.clustersave[-1]
-dist_func = lambda x1, x2: np.sqrt(np.dot(x1-x2,x1-x2))
-sil_score = metrics.silhouette_score(X, cluster_labels, dist_func)
-print(f"Silhouette Score: {sil_score}")
+#dist_func = lambda x1, x2: np.sqrt(np.dot(x1-x2,x1-x2))
+#sil_score = metrics.silhouette_score(X, cluster_labels, dist_func)
+#print(f"Silhouette Score: {sil_score}")
 # (4) plot results
 plot_data.plot_objective(list(range(len(list_objective))),list_objective,
 	title="K Means Clustering",xlabel="Iteration",ylabel="Objective")
 # plot initial data
 plot_data.plot_data2d(X,title="Cluster Data")
 # plot initial data with initial means
-plot_data.plot_data2d(X,mean=model.get_meansave()[0],title="Cluster Data and Initial Means")
+plot_data.plot_data2d(X,mean=model.meansave[0],title="Cluster Data and Initial Means")
 # plot final clusters
 model.plot_cluster()
 # animation

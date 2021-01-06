@@ -5,15 +5,12 @@ from matplotlib import cm
 import numpy as np
 import pandas as pd
 
-def plot_objective(list_x,list_y,**kwargs):
+def plot_objective(list_x,list_y,title="",xlabel="",ylabel=""):
         fig = plt.subplots(1,1)
         plt.plot(list_x,list_y,'b-',marker="o",markersize=5)
-        if "title" in kwargs:
-            plt.title(kwargs["title"])
-        if "xlabel" in kwargs:
-            plt.xlabel(kwargs["xlabel"])
-        if "ylabel" in kwargs:
-            plt.ylabel(kwargs["ylabel"])
+        plt.title(title)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
 
 def plot_data2d(X,**kwargs):
     # X is 2d numpy array (nfeature x nsample)
@@ -47,5 +44,3 @@ def plot_data_mnist(X):
             digit_image = np.flipud(np.reshape(X[:,idx],(npixel_width,npixel_height)))
             ax[row,col].pcolormesh(digit_image,cmap="Greys")
             idx +=1
-
-    

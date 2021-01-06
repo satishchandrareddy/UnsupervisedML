@@ -1,5 +1,6 @@
 # gaussianmm.py
 
+import clustering_base
 from copy import deepcopy
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
@@ -9,16 +10,15 @@ import normal
 import numpy as np
 import pandas as pd
 
-class gaussianmm:
+class gaussianmm(clustering_base.clustering_base):
     def __init__(self,ncluster,initialization="random"):
         self.ncluster = ncluster
         self.initialization = initialization
-        self.gammasave = []
-        self.loglikelihoodsave = []
 
-    def initialize_parameters(self):
+    def initialize_algorithm(self):
         # initial clusters:
         self.clustersave = [(-1)*np.ones((self.nsample))]
+        self.loglikelihoodsave = []
         # initialize means, covariances, and weights
         mean = []
         if self.initialization == "kmeans++":
@@ -43,7 +43,7 @@ class gaussianmm:
         self.Sigmasave = [[Sigma for _ in range(self.ncluster)]]
 
     def compute_distance(self,X,list_mean):
-        # compute distance between each sample in X and each mean in cluster
+        # compute distance between each sample in X and each mean in list_cluster
         dist = np.zeros((len(list_mean),X.shape[1]))
         # loop over means in list_mean
         for count in range(len(list_mean)):
@@ -52,28 +52,28 @@ class gaussianmm:
 
     def expectation(self):
         # update gammas
-        self.weighted_normal = np.zeros((self.ncluster,self.nsample))
+        weighted_normal = np.zeros((self.ncluster,self.nsample))
         for k in range(self.ncluster):
-            self.weighted_normal[k,:] = self.weightsave[-1][k]*normal.normal_pdf(self.X,self.meansave[-1][k],self.Sigmasave[-1][k])
-        self.gammasave.append(deepcopy(self.weighted_normal/np.sum(self.weighted_normal,axis=0,keepdims=True)))
+            weighted_normal[k,:] = self.weightsave[-1][k]*normal.normal_pdf(self.X,self.meansave[-1][k],self.Sigmasave[-1][k])
+        self.gamma = weighted_normal/np.sum(weighted_normal,axis=0,keepdims=True)
         # compute log likelihood and save
-        self.loglikelihoodsave.append(np.sum(np.log(np.sum(self.weighted_normal,axis=0))))
-        # determine clusters and save
-        self.determine_cluster()
+        self.loglikelihoodsave.append(np.sum(np.log(np.sum(weighted_normal,axis=0))))
+        # update cluster assignments
+        self.update_cluster_assignment()
 
     def maximization(self):
         # compute number of points in each cluster
-        self.N = np.sum(self.gammasave[-1],axis=1)
+        self.N = np.sum(self.gamma,axis=1)
         # compute mean, Sigma, and weight for each cluster
         list_mean = []
         list_Sigma = []
         list_weight = []
         for k in range(self.ncluster):
-            mean = np.sum(self.X*self.gammasave[-1][k,:],axis=1,keepdims=True)/self.N[k]
+            mean = np.sum(self.X*self.gamma[k,:],axis=1,keepdims=True)/self.N[k]
             list_mean.append(mean)
             list_weight.append(self.N[k]/self.nsample)
             Xmm = self.X - mean
-            list_Sigma.append(np.dot(self.gammasave[-1][k,:]*Xmm,Xmm.T)/self.N[k])
+            list_Sigma.append(np.dot(self.gamma[k,:]*Xmm,Xmm.T)/self.N[k])
         self.meansave.append(list_mean)
         self.weightsave.append(list_weight)
         self.Sigmasave.append(list_Sigma)
@@ -85,22 +85,19 @@ class gaussianmm:
             diff = max(diff,np.sqrt(np.sum(np.square(self.meansave[-1][k]-self.meansave[-2][k]))))
         return diff
 
-    def determine_cluster(self):
-        # determine cluster index for each point in data set
-        self.clustersave.append(np.argmax(self.gammasave[-1],axis=0))
+    def update_cluster_assignment(self):
+        # determine cluster index for each point in data set for current iteration
+        self.clustersave.append(np.argmax(self.gamma,axis=0))
 
-    def get_meansave(self):
-        return self.meansave
-
-    def fit(self,X,niteration,tolerance=1e-5,verbose=True):
+    def fit(self,X,max_iter,tolerance=1e-5,verbose=True):
         self.X = X
         self.nsample = X.shape[1]
         # initialize
-        self.initialize_parameters()
+        self.initialize_algorithm()
         diff = 1e+10
-        count = 1
-        # loop over iteration
-        while (count<=niteration and diff>tolerance):
+        count = 0
+        # loop 
+        while (count<=max_iter and diff>tolerance):
             # expectation step
             self.expectation()
             # maximization step
@@ -113,10 +110,12 @@ class gaussianmm:
             count += 1
         return self.loglikelihoodsave
 
-    def plot_cluster(self):
+    def plot_cluster(self,title="",xlabel="",ylabel=""):
         # plot final clusters and means
         fig,ax = plt.subplots(1,1)
-        ax.set_title("Clusters and Gaussians")
+        ax.set_title(title)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
         array_color_data = (1+self.clustersave[-1])/self.ncluster
         scatter_data = plt.scatter(self.X[0,:],self.X[1,:], color=cm.jet(array_color_data), marker="o", s=15)
         # plot Gaussian footprints
@@ -125,9 +124,11 @@ class gaussianmm:
             ell = Ellipse(xy=mean, width=width, height=height, angle=angle, color=cm.jet((cluster+1)/self.ncluster), alpha=0.5)
             ax.add_patch(ell)
 
-    def plot_results_animation(self,X,notebook=False):
+    def plot_results_animation(self,title="",xlabel="",ylabel=""):
         fig,ax = plt.subplots(1,1)
-        ax.set_title("Evolution of Clusters")
+        ax.set_title(title)
+        ax.set_xlabel(xlabel)
+        ax.set_ylabel(ylabel)
         # create dummy ellipse containers
         list_object = []
         for cluster in range(self.ncluster):
@@ -135,7 +136,7 @@ class gaussianmm:
             list_object.append(ell)
             ax.add_patch(ell)
         # scatter plot of data
-        scat = ax.scatter(X[0,:], X[1,:], color = cm.jet(0), marker="o", s=15)
+        scat = ax.scatter(self.X[0,:], self.X[1,:], color = cm.jet(0), marker="o", s=15)
         list_object.append(scat)
 
         def init():
@@ -162,9 +163,7 @@ class gaussianmm:
             repeat_delay=1000, repeat=True, interval=1000, blit=True)
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
-        ani.save('cluster.mp4', writer='ffmpeg')
-        if notebook:
-            return ani
+        #ani.save('cluster.mp4', writer='ffmpeg')
         plt.show()
 
     def plot_cluster_distribution(self, labels, figsize=(12,4)):

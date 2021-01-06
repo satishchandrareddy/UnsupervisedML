@@ -18,21 +18,17 @@ X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
 initialization = "random"
 model = gaussianmm.gaussianmm(ncluster,initialization)
 # (3) fit model
-niteration = 25
+max_iter = 25
 tolerance = 1e-5
-start = time.time()
-list_loglikelihood = model.fit(X,niteration,tolerance)
-end = time.time()
-print("Training time (gaussianmm): {}".format(end - start))
+list_loglikelihood = model.fit(X,max_iter,tolerance)
 # (4) plot results
+# plot loglikelihood
 plot_data.plot_objective(list(range(len(list_loglikelihood))),list_loglikelihood,
 	title="Gaussian Mixture Model",xlabel="Iteration",ylabel="Log Likelihood")
-# plot initial data
-plot_data.plot_data2d(X)
 # plot initial data with initial means
-plot_data.plot_data2d(X,mean=model.get_meansave()[0])
+plot_data.plot_data2d(X,mean=model.meansave[0])
 # plot final clusters
 model.plot_cluster()
 # animation
-model.plot_results_animation(X)
+model.plot_results_animation()
 plt.show()

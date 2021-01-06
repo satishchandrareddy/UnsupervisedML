@@ -1,32 +1,49 @@
 # pca.py
 
-import load_mnist
 import numpy as np
 
 class pca:
-    def __init__(self,variance_capture):
-        self.variance_capture = variance_capture
+    def __init__(self):
+        pass
 
-    def compute_reduced(self,X):
-        # return X projected onto the reduced dimensional space
-        # number of dimensions
-        ndim = X.shape[0]
-        print("Original dimension: {}".format(ndim))
-        # comopute SVD
-        u, s, vh = np.linalg.svd(X)
-        # cumpute cumulative sum of squares of variance
-        cumulative_variance = np.cumsum(np.square(s))
-        total_variance = cumulative_variance[-1]
-        print("Total variance: {}".format(total_variance))
-        # determine number of dimension to capture variance_capture proportion of variance
-        cumulative_variance_prop = cumulative_variance/total_variance
-        cumulative_variance_capture = cumulative_variance_prop[cumulative_variance_prop<=self.variance_capture]
-        # add 1 to reduced dimension to make sure we have at least variance_capture proportion of variance
-        reduced_dim = np.size(cumulative_variance_capture)
-        if reduced_dim == 0:
-            reduced_dim = 1
-        elif reduced_dim >0:
-            if cumulative_variance_prop[reduced_dim-1]<self.variance_capture:
-                reduced_dim += 1
-        print("Reduced dimension: {} - variance capture proportion: {}".format(reduced_dim,cumulative_variance_prop[reduced_dim-1]))
-        return np.dot(u[:,0:reduced_dim],np.expand_dims(s[0:reduced_dim],axis=1)*vh[0:reduced_dim,:])
+    def fit(self,X):
+        # compute SVD of X = X - Xmean
+        (self.dimension,self.nsample) = X.shape
+        print("Number of data points: {}".format(self.nsample))
+        print("Number of dimensions: {}".format(self.dimension))
+        self.Xmean = np.mean(X,axis=1,keepdims=True)
+        self.U,self.Sigma,self.Vh = np.linalg.svd(X-self.Xmean,full_matrices=False)
+        self.cumulative_variance = np.cumsum(np.square(self.Sigma))/self.nsample
+        self.total_variance = self.cumulative_variance[-1]
+        print("Total Variance: {}".format(self.total_variance))
+    
+    def get_dimension(self,variance_capture):
+        cumulative_variance_prop = self.cumulative_variance/self.total_variance
+        cumulative_variance_capture = cumulative_variance_prop[cumulative_variance_prop<=variance_capture]
+        dim = np.size(cumulative_variance_capture)
+        if dim == 0:
+            dim = 1
+        else:
+            if cumulative_variance_prop[dim-1]<variance_capture:
+                dim += 1
+        return dim
+
+    def data_reduced_dimension(self,**kwargs):
+        # compute coordinates of X-Xmean in reduced u(0),...,u(dim-1) coordinate system
+        dim = self.dimension
+        if "reduced_dim" in kwargs:
+            dim = kwargs["reduced_dim"]
+        elif "variance_capture" in kwargs:
+            dim = self.get_dimension(kwargs["variance_capture"])
+        print("Reduced dimension: {} - variance capture proportion: {}".format(dim,self.cumulative_variance[dim-1]/self.total_variance))
+        return np.matmul(np.diag(self.Sigma[0:dim]),self.Vh[0:dim,:])
+
+    def data_reconstructed(self,**kwargs):
+        # recompute data in original number of dimensions using dim principal components
+        dim = self.dimension
+        if "reduced_dim" in kwargs:
+            dim = kwargs["reduced_dim"]
+        elif "variance_capture" in kwargs:
+            dim = self.get_dimension(kwargs["variance_capture"])
+        print("Reduced dimension: {} - variance capture proportion: {}".format(dim,self.cumulative_variance[dim-1]/self.total_variance))
+        return np.matmul(self.U[:,0:dim],np.matmul(np.diag(self.Sigma[0:dim]),self.Vh[0:dim,:]))+self.Xmean
