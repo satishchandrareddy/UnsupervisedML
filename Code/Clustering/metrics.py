@@ -1,32 +1,42 @@
 # metrics.py
+# cluster metrics functions
 
+from copy import deepcopy
 import numpy as np
 
-def silhouette(i, X, cluster_labels, dist_func):
-    """Calculate the silhouette value for a given point X_i."""
-    # calculate avg distance between X_i and every other point in its cluster
-    cluster_label = cluster_labels[i]
-    cluster_i = np.squeeze(np.argwhere(cluster_labels == cluster_label))
-    C_i = len(cluster_i)
-    if C_i == 1:
-        return 0
-    a_i = np.sum([dist_func(X[:,i], X[:,j]) for j in cluster_i]) / (C_i-1)
-    # calculate avg distance between X_i and every other point in its closest cluster
-    min_dist = float('inf')
-    k = None
-    for l in range(X.shape[1]):
-        if cluster_labels[l] != cluster_label:
-            dist = dist_func(X[:,i], X[:,l])
-            if dist < min_dist or k is None:
-                min_dist = dist
-                k = cluster_labels[l]
-    cluster_k = np.squeeze(np.argwhere(cluster_labels == k))
-    b_i = np.mean([dist_func(X[:,i], X[:,k]) for k in cluster_k])
-    # calculate silhouette value for X_i
-    s_i = (b_i - a_i) / max(b_i, a_i)
-    return s_i
-
-def silhouette_score(X, cluster_labels, dist_func):
-    """Calculate the average silhouette value of all points."""
-    S = np.mean([silhouette(i, X, cluster_labels, dist_func) for i in range(X.shape[1])])
-    return S
+def silhouette(X,cluster_assignment):
+    #Calculate the silhouette value for the dataset after cluster assignments have been determined
+    # X is dataset (2d numpy array dimensions: d features x nsamples)
+    # cluster_assignment (1d numpy array of length nsamples)
+    nsample = np.size(cluster_assignment)
+    cluster_assignment_adjusted = deepcopy(cluster_assignment)
+    # relabel labels originally set as -1
+    for count in range(nsample):
+        if cluster_assignment[count] == -1:
+            cluster_assignment_adjusted[count] = -(count+1)
+    # determine set of labels:
+    list_cluster_label = list(set(cluster_assignment_adjusted))
+    # initialize s
+    s = np.zeros((nsample))
+    # loop over over labels
+    for label in list_cluster_label:
+        # determine indices for current current cluster label
+        idx_cluster = np.where(np.absolute(cluster_assignment_adjusted - label)<=1e-5)[0]
+        if np.size(idx_cluster)==1:
+            continue
+        # loop over points in the cluster
+        for idx in idx_cluster:
+            a = np.sum(dist(X[:,[idx]],X[:,idx_cluster]))/(np.size(idx_cluster)-1)
+            dist_mean_other = []
+            # loop over other clusters to determine b
+            for other_label in list_cluster_label:
+                if other_label != label:
+                    idx_cluster_other = np.where(np.absolute(cluster_assignment_adjusted - other_label)<=1e-5)[0]
+                    dist_mean_other.append(np.mean(dist(X[:,[idx]],X[:,idx_cluster_other])))
+            b = min(dist_mean_other)
+            s[idx] = (b-a)/np.maximum(a,b)
+    return np.mean(s)
+    
+def dist(Xpoint,Xdataset):
+    # compute average distance between Xpoint and data in Xdataset
+    return np.sqrt(np.sum(np.square(Xpoint - Xdataset),axis=0,keepdims=True))

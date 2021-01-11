@@ -3,6 +3,7 @@
 import clustering_base
 from copy import deepcopy
 import numpy as np
+import time
 
 class dbscan(clustering_base.clustering_base):
     def __init__(self,minpts,epsilon):
@@ -54,6 +55,7 @@ class dbscan(clustering_base.clustering_base):
                     list_seed = self.add_points(list_seed,new_neighbours)
 
     def fit(self,X):
+        time_start = time.time()
         self.X = X
         self.nsample = X.shape[1]
         self.initialize_algorithm()
@@ -75,3 +77,5 @@ class dbscan(clustering_base.clustering_base):
             # points to investigate
             self.extend_cluster(cluster_number,idx,list_neighbours)
         self.ncluster = cluster_number + 1
+        time_end = time.time()
+        print("DBSCAN fit time: {}".format(time_end - time_start))

@@ -16,6 +16,17 @@ def normal_pdf(X,mu,Cov):
         output[0,count] = prob/np.sqrt(np.power(2*np.pi,nfeature)*detCov)
     return output
 
+def normal_pdf_vectorized(X,mu,Cov):
+	# Compute normal probability density function in arbitrary dimensions
+	# X is 2d np.array of shape d dimensions, m data points on which pdf is evaluated
+	# mu is 2d np.array of shape d dimension,1 of the mean
+	# Cov is 2d np.array of shape d,d - covariance matrix
+    detCov = np.linalg.det(Cov)
+    invCov = np.linalg.inv(Cov)
+    arg_exp = np.matmul(invCov,(X - mu))
+    arg_exp = -0.5*np.sum((X - mu)*arg_exp,axis=0,keepdims=True)
+    return np.exp(arg_exp)/np.sqrt(np.power(2*np.pi,X.shape[0])*detCov)
+
 def create_ellipse_patch_details(mu,Cov,weight,contour=2e-3):
 	# compute ellipse patch in 2d to show contour 
 	# mu (mean) is np.array of shape (2,) or np.array of shape (2,1)

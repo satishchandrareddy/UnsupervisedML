@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
 import pandas as pd
+import time
 
 class kmeans:
     def __init__(self,ncluster, initialization='random'):
@@ -69,6 +70,7 @@ class kmeans:
         self.meansave.append(deepcopy(list_mean))
 
     def fit(self,X,niteration,tolerance=1e-5,verbose=True):
+        time_start = time.time()
         self.X = X
         self.nsample = X.shape[1]
         self.initialize_algorithm()
@@ -87,6 +89,8 @@ class kmeans:
             self.update_mean()
             diff = self.compute_diff_mean()
             i += 1
+        time_end = time.time()
+        print("K Means fit time: {}".format(time_end - time_start))
         return self.objectivesave
 
     def plot_cluster(self,title="",xlabel="",ylabel=""):
@@ -97,7 +101,6 @@ class kmeans:
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         array_mean = np.concatenate(tuple(self.meansave[-1]),axis=1)
-        ax.set_title("Clusters and Means")
         array_color_data = (1+self.clustersave[-1])/self.ncluster
         array_color_mean = np.arange(1,self.ncluster+1)/self.ncluster
         scatter_data = plt.scatter(self.X[0,:],self.X[1,:], color=cm.jet(array_color_data), marker="o", s=15)

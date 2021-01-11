@@ -66,4 +66,4 @@ class hierarchical(clustering_base.clustering_base):
         for level in range(self.nsample-1):
             self.combine_closest_clusters()
         time_end = time.time()
-        print("Time Hierarchical: {}".format(time_end - time_start))
+        print("Hierarchical fit time: {}".format(time_end - time_start))

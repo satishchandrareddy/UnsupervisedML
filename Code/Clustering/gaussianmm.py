@@ -9,6 +9,7 @@ from matplotlib import cm
 import normal
 import numpy as np
 import pandas as pd
+import time
 
 class gaussianmm(clustering_base.clustering_base):
     def __init__(self,ncluster,initialization="random"):
@@ -54,7 +55,7 @@ class gaussianmm(clustering_base.clustering_base):
         # update gammas
         weighted_normal = np.zeros((self.ncluster,self.nsample))
         for k in range(self.ncluster):
-            weighted_normal[k,:] = self.weightsave[-1][k]*normal.normal_pdf(self.X,self.meansave[-1][k],self.Sigmasave[-1][k])
+            weighted_normal[k,:] = self.weightsave[-1][k]*normal.normal_pdf_vectorized(self.X,self.meansave[-1][k],self.Sigmasave[-1][k])
         self.gamma = weighted_normal/np.sum(weighted_normal,axis=0,keepdims=True)
         # compute log likelihood and save
         self.loglikelihoodsave.append(np.sum(np.log(np.sum(weighted_normal,axis=0))))
@@ -90,6 +91,7 @@ class gaussianmm(clustering_base.clustering_base):
         self.clustersave.append(np.argmax(self.gamma,axis=0))
 
     def fit(self,X,max_iter,tolerance=1e-5,verbose=True):
+        time_start = time.time()
         self.X = X
         self.nsample = X.shape[1]
         # initialize
@@ -108,6 +110,8 @@ class gaussianmm(clustering_base.clustering_base):
             # compute difference:
             diff = self.compute_diff()
             count += 1
+        time_end = time.time()
+        print("Gaussian Mixture Model fit time: {}".format(time_end - time_start))
         return self.loglikelihoodsave
 
     def plot_cluster(self,title="",xlabel="",ylabel=""):
