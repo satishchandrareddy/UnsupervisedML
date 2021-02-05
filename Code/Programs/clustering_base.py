@@ -34,7 +34,7 @@ class clustering_base:
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         color = (self.clustersave[nlevel]+1)/self.ncluster
-        clusterdata = plt.scatter(self.X[0,:],self.X[1,:],color=cm.jet(color),marker="o",s=15)
+        scat = ax.scatter(self.X[0,:],self.X[1,:],color=cm.jet(color),marker="o",s=15)
 
     def plot_cluster_animation(self,nlevel=-1,inteval=50,title="",xlabel="",ylabel=""):
         fig,ax = plt.subplots(1,1)
