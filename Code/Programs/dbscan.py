@@ -12,7 +12,6 @@ class dbscan(clustering_base.clustering_base):
 
     def initialize_algorithm(self):
         self.objectivesave = []
-        self.list_idx = np.random.permutation(self.nsample)
         self.list_label = ["unvisited" for _ in range(self.nsample)]
         self.clustersave = [(-1)*np.ones((self.nsample))]
 
@@ -57,7 +56,7 @@ class dbscan(clustering_base.clustering_base):
         self.nsample = X.shape[1]
         self.initialize_algorithm()
         cluster_number = -1
-        for idx in self.list_idx:
+        for idx in range(self.nsample):
             # if point is processed already, then pass
             if self.list_label[idx] != "unvisited":
                 continue
@@ -74,6 +73,4 @@ class dbscan(clustering_base.clustering_base):
             # build cluster
             self.extend_cluster(cluster_number,idx,list_neighbours)
         self.ncluster = cluster_number + 1
-        time_end = time.time()
-        print("DBSCAN fit time: {}".format(time_end - time_start))
-        return time_end - time_start
+        self.time_fit = time.time() - time_start

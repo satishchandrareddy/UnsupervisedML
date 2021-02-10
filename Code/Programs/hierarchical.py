@@ -1,5 +1,4 @@
 # hierarchical.py
-# hierarchical clustering
 
 import clustering_base
 from copy import deepcopy
@@ -16,13 +15,12 @@ class hierarchical(clustering_base.clustering_base):
         self.ncluster = self.nsample
 
     def dist_between_clusters(self,idx1,idx2):
-        # idx1, idx2 are lists of indices of data set
-        # this function returns distance squared between idx1 and idx2 points
+        # return distance squared between cluster means defined by indices idx1 and idx2
         return np.sum(np.square(np.mean(self.X[:,idx1],axis=1)-np.mean(self.X[:,idx2],axis=1)))
 
     def update_cluster_assignment(self,idx1,idx2):
-        # idx1, idx2 are lists of indices of data set
         # update clustersave
+        # add assign datapoints with indices idx2 to same cluster as those in idx1
         array_clustersave = deepcopy(self.clustersave[-1])
         array_clustersave[self.list_cluster[idx1]] = self.list_cluster[idx1][0]
         array_clustersave[self.list_cluster[idx2]] = self.list_cluster[idx1][0]
@@ -39,8 +37,9 @@ class hierarchical(clustering_base.clustering_base):
                 if (len(self.list_cluster[count1])>0) and (len(self.list_cluster[count2])>0):
                     dist = self.dist_between_clusters(self.list_cluster[count1],self.list_cluster[count2])
                     # if distance is smaller than than current smallest, save 
+                    # points in cluster idx1 >= points in cluster idx2
                     if dist<cluster_dist:
-                        if len(self.list_cluster[count1])>len(self.list_cluster[count2]):
+                        if len(self.list_cluster[count1])>=len(self.list_cluster[count2]):
                             idx1 = count1
                             idx2 = count2
                         else:
@@ -54,15 +53,12 @@ class hierarchical(clustering_base.clustering_base):
         self.update_cluster_assignment(idx1,idx2)
 
     def fit(self,X):
-        # X is dataset
-        # main function for determining cluster assignments
+        # determine clusters at all levels for dataset X
         time_start = time.time()
         self.X = X
         self.nsample = X.shape[1]
         self.initialize_algorithm()
-        # go through process of combining nearest clusters at each level
+        # loop over levels and combine nearest clusters
         for level in range(self.nsample-1):
             self.combine_closest_clusters()
-        time_end = time.time()
-        print("Hierarchical fit time: {}".format(time_end - time_start))
-        return time_end - time_start
+        self.time_fit = time.time() - time_start

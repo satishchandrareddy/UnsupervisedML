@@ -1,19 +1,17 @@
 # driver_news_text.py
 
-import load_text
+import data_bbctext
 import kmeans
 import pca
 import metrics
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import rcParams
 import plot_data
 import time
-rcParams.update({'figure.autolayout': True})
 
 # (1) load data
-text = load_text.text_processing()
-X,Y = text.load_text()
+text = data_bbctext.bbctext()
+X,Y = text.load()
 # (2) PCA
 R = X
 use_pca = True
@@ -33,8 +31,8 @@ model = kmeans.kmeans(ncluster,initialization)
 # (4) fit model
 max_iter = 50
 model.fit(R,max_iter)
+print("Time fit: {}".format(model.time_fit))
 # (5) results
-#text.analysis(X,model.clustersave[-1],ncluster)
 print("Purity: {}".format(metrics.purity(model.clustersave[-1],np.squeeze(Y))))
 model.plot_objective(title="K Means",xlabel="Iteration",ylabel="Objective")
 plot_data.plot_cluster_distribution(model.clustersave[-1],Y,figsize=(8,4))

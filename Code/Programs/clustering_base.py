@@ -15,10 +15,13 @@ class clustering_base:
     def fit(self,X):
         pass
 
-    def get_index(self,cluster_assignment,cluster):
-        return np.where(np.absolute(cluster_assignment-cluster)<1e-5)[0]
+    def get_index(self,nlevel,cluster):
+        # cluster (integer) = cluster number
+        # return indices of samples in clustersave[nlevel] = cluster_number
+        return np.where(np.absolute(self.clustersave[nlevel]-cluster)<1e-5)[0]
 
     def plot_objective(self,title="",xlabel="",ylabel=""):
+        # plot objective function if data is collected
         if len(self.objectivesave)>0:
             fig = plt.subplots(1,1)
             list_iteration = list(range(len(self.objectivesave)))
@@ -28,6 +31,7 @@ class clustering_base:
             plt.ylabel(ylabel)
 
     def plot_cluster(self,nlevel=-1,title="",xlabel="",ylabel=""):
+        # plot cluster assignment for dataset for self.clustersave[nlevel]
         fig,ax = plt.subplots(1,1)
         # plot data points separate color for each cluster
         ax.set_title(title)
@@ -36,7 +40,9 @@ class clustering_base:
         color = (self.clustersave[nlevel]+1)/self.ncluster
         scat = ax.scatter(self.X[0,:],self.X[1,:],color=cm.jet(color),marker="o",s=15)
 
-    def plot_cluster_animation(self,nlevel=-1,inteval=50,title="",xlabel="",ylabel=""):
+    def plot_cluster_animation(self,nlevel=-1,interval=50,title="",xlabel="",ylabel=""):
+        # create animation for cluster assignments for dataset clusterlevel[level] 
+        # for level = 0,1,...,nlevel
         fig,ax = plt.subplots(1,1)
         ax.set_title(title)
         ax.set_xlabel(xlabel)
@@ -55,3 +61,7 @@ class clustering_base:
 
         ani = animation.FuncAnimation(fig=fig, func=update, frames = nframe,
             fargs=[scat,self.clustersave,self.ncluster], repeat_delay=1000, repeat=True, interval=interval, blit=True)
+
+        # uncomment to create mp4 
+        # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
+        #ani.save('Clustering_Animation.mp4', writer='ffmpeg')

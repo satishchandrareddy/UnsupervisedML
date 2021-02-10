@@ -1,11 +1,12 @@
 # casestudy_iris_knearestneighbour.py
 
-import load_iris
+import data_iris
 import numpy as np
 import matplotlib.pyplot as plt
 
 # load data
-X,Y = load_iris.load_iris()
+iris = data_iris.iris()
+X,Y = iris.load()
 nsample = X.shape[1]
 # determine k nearest neighbour
 minpts = 5

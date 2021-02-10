@@ -3,29 +3,21 @@
 from copy import deepcopy
 import matplotlib.pyplot as plt
 from matplotlib import cm
+from matplotlib import rcParams
 import numpy as np
 import pandas as pd
 
-def plot_data2d(X,**kwargs):
-    # X is 2d numpy array (nfeature x nsample)
-    # kwargs: mean is list of means each (nfeature x 1)
+def plot_scatter(X,title="",xlabel="",ylabel=""):
+    # create scatter plot of data in X (2d numpy array ndim x nsample)
     plt.figure()
     plt.scatter(X[0,:],X[1,:],color=cm.jet(0),marker="o",s=15)
-    if "mean" in kwargs:
-        list_mean = kwargs["mean"]
-        ncluster = len(list_mean)
-        color = np.arange(1,ncluster+1)/ncluster
-        array_mean = np.concatenate(tuple(list_mean),axis=1)
-        plt.scatter(array_mean[0,:],array_mean[1,:],color=cm.jet(color),marker="s",s=50)
-    if "title" in kwargs:
-        plt.title(kwargs["title"])
-    if "xlabel" in kwargs:
-        plt.xlabel(kwargs["xlabel"])
-    if "ylabel" in kwargs:
-        plt.ylabel(kwargs["ylabel"])
-
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    
 def plot_scatter_class(X,Y,title="",xlabel="",ylabel=""):
-    # determine list of classes:
+    # create scatter plot of data in X (2d numpy array ndim x nsample)
+    # colour based on integer values in Y (1d numpy array)
     list_classname = list(set(Y))
     nclass = len(list_classname)
     # create figure
@@ -38,22 +30,8 @@ def plot_scatter_class(X,Y,title="",xlabel="",ylabel=""):
         ax.scatter(X[0,idx],X[1,idx],color = cm.hsv((i+1)/nclass), s=15, label = classname)
     ax.legend(loc="upper left")
 
-def plot_data_mnist(X,list_image):
-    # create 5x5 subplot of mnist images
-    nrow = 5
-    ncol = 5
-    npixel_width = 28
-    npixel_height = 28
-    fig,ax = plt.subplots(nrow,ncol,sharex="col",sharey="row")
-    idx = 0
-    fig.suptitle("Images of Sample MNIST Digits")
-    for row in range(nrow):
-        for col in range(ncol):
-            digit_image = np.flipud(np.reshape(X[:,list_image[idx]],(npixel_width,npixel_height)))
-            ax[row,col].pcolormesh(digit_image,cmap="Greys")
-            idx +=1
-
 def plot_cluster_distribution(cluster_assignment, class_label, figsize=(8,4), figrow=1):
+    rcParams.update({'figure.autolayout': True})
     # adjust cluster labels (in case label is -1):
     nsample = np.size(cluster_assignment)
     cluster_assignment_adjusted = deepcopy(cluster_assignment)

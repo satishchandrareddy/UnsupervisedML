@@ -6,7 +6,6 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
-import pandas as pd
 import time
 
 class kmeans(clustering_base.clustering_base):
@@ -92,9 +91,7 @@ class kmeans(clustering_base.clustering_base):
             self.update_mean()
             diff = self.compute_diff_mean()
             i += 1
-        time_end = time.time()
-        print("K Means fit time: {}".format(time_end - time_start))
-        return time_end-time_start
+        self.time_fit = time.time() - time_start
 
     def plot_cluster(self,nlevel,title="",xlabel="",ylabel=""):
         # plot final clusters and means
@@ -138,5 +135,5 @@ class kmeans(clustering_base.clustering_base):
             fargs=[scat_data,scat_mean,self.X,self.clustersave,self.meansave,self.ncluster], repeat_delay=1000, repeat=True, interval=interval, blit=True)
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
-        ani.save('KMeans_Animation.mp4', writer='ffmpeg')
+        #ani.save('KMeans_Animation.mp4', writer='ffmpeg')
         plt.show()

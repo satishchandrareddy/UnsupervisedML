@@ -27,7 +27,7 @@ for ncluster in range(ncluster_find):
 	print("Number of Clusters: {}   Mean Objective: {}".format(ncluster+1,mean_objective))
 	array_objective.append(mean_objective)
 # plot data
-plot_data.plot_data2d(X)
+plot_data.plot_scatter(X,title="Data",xlabel="Feature x0",ylabel="Feature x1")
 # plot objective as function of clusters
 plt.figure()
 plt.plot(list(range(1,ncluster_find+1)),array_objective,'b-',marker="o",markersize=5)

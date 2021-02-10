@@ -1,22 +1,19 @@
 # driver_iris.py
-import dbscan
-import load_iris
-import gaussianmm
+
+import data_iris
 import hierarchical
-import kmeans
 import matplotlib.pyplot as plt
-from matplotlib import rcParams
 import metrics
-import numpy as np
 import plot_data
-rcParams.update({'figure.autolayout': True})
 
 # (1) load data
-X,Y = load_iris.load_iris()
+iris = data_iris.iris()
+X,Y = iris.load()
 # (2) create model
 model = hierarchical.hierarchical()
 # (3) fit model
 model.fit(X)
+print("Time fit: {}".format(model.time_fit))
 # (4) results
 print("Purity: {}".format(metrics.purity(model.clustersave[-3],Y)))
 print("Silhouette: {}".format(metrics.silhouette(X,model.clustersave[-3])))

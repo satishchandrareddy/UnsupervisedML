@@ -3,10 +3,7 @@
 import create_data_cluster_sklearn
 import gaussianmm
 import matplotlib.pyplot as plt
-import metrics
 import numpy as np
-import plot_data
-import time
 
 # (1) generate data
 # comment out seed line to generate different set of random numbers
@@ -22,6 +19,7 @@ model = gaussianmm.gaussianmm(ncluster,initialization)
 max_iter = 25
 tolerance = 1e-3
 model.fit(X,max_iter,tolerance)
+print("Fitting time: {}".format(model.time_fit))
 # (4) plot results
 # plot loglikelihood
 model.plot_objective(title="Gaussian Mixture Model",xlabel="Iteration",ylabel="Log Likelihood")

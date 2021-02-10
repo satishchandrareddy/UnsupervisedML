@@ -19,8 +19,8 @@ X = {case : create_data_cluster_sklearn.create_data_cluster(nsample, case) for c
 models = ["K-Means", "GaussianMM", "DBSCAN"]
 
 # pick datasets:
-list_dataset = ["blobs", "varied_blobs1", "varied_blobs2"]
-#list_dataset = ["noisy_circles", "noisy_moons", "aniso"]
+#list_dataset = ["blobs", "varied_blobs1", "varied_blobs2"]
+list_dataset = ["noisy_circles", "noisy_moons", "aniso"]
 fig, axes = plt.subplots(len(list_dataset), len(models), figsize=(8,12), sharey=True)
 for i,dataset in enumerate(list_dataset):
     print("Dataset: {}".format(dataset))
@@ -73,9 +73,10 @@ for i,dataset in enumerate(list_dataset):
         # fit model
         print("Dataset: {}".format(dataset))
         if model == "DBSCAN":
-    	    t = mod.fit(X[dataset])
+    	    mod.fit(X[dataset])
         else:
-    	    t = mod.fit(X[dataset],100,1e-5,False)
+    	    mod.fit(X[dataset],100,1e-5,False)
+        print("Time fit: {}".format(mod.time_fit))
         # silhouette score
         silhouette_score = metrics.silhouette(X[dataset],mod.clustersave[-1])
         print("Silhouette Score: {}".format(silhouette_score))
@@ -84,9 +85,9 @@ for i,dataset in enumerate(list_dataset):
         axes[i,j].set_xticklabels([])
         axes[i,j].set_yticklabels([])
         if i == 0:
-            title =  model + "\ns: {:.2f}  time: {:.3f}".format(silhouette_score,t)
+            title =  model + "\ns: {:.2f}  time: {:.3f}".format(silhouette_score,mod.time_fit)
         else:
-            title = "s: {:.2f}  time: {:.3f}".format(silhouette_score,t)
+            title = "s: {:.2f}  time: {:.3f}".format(silhouette_score,mod.time_fit)
         axes[i,j].set_title(title)
     
 plt.show()

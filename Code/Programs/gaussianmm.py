@@ -109,9 +109,7 @@ class gaussianmm(clustering_base.clustering_base):
             # compute difference:
             diff = self.compute_diff()
             count += 1
-        time_end = time.time()
-        print("Gaussian Mixture Model fit time: {}".format(time_end - time_start))
-        return time_end - time_start
+        self.time_fit = time.time() - time_start
 
     def plot_cluster(self,nlevel,plot_ellipse=True,title="",xlabel="",ylabel=""):
         # plot final clusters and means
@@ -147,7 +145,7 @@ class gaussianmm(clustering_base.clustering_base):
             ax.add_patch(ell)
         # scatter plot of data
         scat = ax.scatter(self.X[0,:], self.X[1,:], color = cm.jet(0), marker="o", s=15)
-#        list_object.append(scat)
+        #list_object.append(scat)
         list_object.insert(0,scat)
 
         def update(i,list_object,clustersave,meansave,Covsave,weightsave):
@@ -169,5 +167,5 @@ class gaussianmm(clustering_base.clustering_base):
             repeat_delay=1000, repeat=True, interval=interval, blit=True)
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
-        ani.save('GMM_Animation.mp4', writer='ffmpeg')
+        #ani.save('GMM_Animation.mp4', writer='ffmpeg')
         plt.show()

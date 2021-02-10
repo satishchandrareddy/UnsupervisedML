@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # (1) generate data
-np.random.seed(31)
 nsample = 500
 case = "noisy_moons"
 X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
@@ -16,6 +15,7 @@ epsilon = 0.18
 model = dbscan.dbscan(minpts,epsilon)
 # (3) fit model
 model.fit(X)
+print("Fitting time: {}".format(model.time_fit))
 # (4) plot results
 # plot initial data
 model.plot_cluster(0)

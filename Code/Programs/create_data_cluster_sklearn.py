@@ -1,8 +1,8 @@
 # create_data.py
 
 import matplotlib.pyplot as plt
+from matplotlib import cm
 import numpy as np
-import plot_data
 from sklearn import datasets
 from sklearn.preprocessing import StandardScaler
 
@@ -27,10 +27,17 @@ def create_data_cluster(n_samples,case):
 	# translate by sample mean and scale by standard deviation
 	return scaler.fit_transform(X).T
 
-if __name__ =="__main__":
-	nsample = 500
-	case = "noisy_moons"
-	title = "Dataset " + case
-	X = create_data_cluster(nsample,case)
-	plot_data.plot_data2d(X,title=title) 
-	plt.show()
+if __name__ == "__main__":
+    # create each of datasets with 1500 points and plot in 2 rows and 3 columns
+    list_dataset = [["blobs", "varied_blobs1", "varied_blobs2"],["aniso", "noisy_moons", "noisy_circles"]]
+    nsample = 1500
+    nrow = 2
+    ncol = 3
+    fig, axs = plt.subplots(nrow,ncol)
+    for row in range(nrow):
+	    for col in range(ncol):
+		    case = list_dataset[row][col]
+		    X = create_data_cluster(nsample,case)
+		    axs[row,col].scatter(X[0,:],X[1,:],color = cm.jet(0), s=15)
+		    axs[row,col].set_title(case)
+    plt.show()

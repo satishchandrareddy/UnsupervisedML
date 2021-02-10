@@ -1,19 +1,16 @@
-# driver_iris.py
-import dbscan
-import load_iris
+# driver_iris_pca.py
+
+import data_iris
 import gaussianmm
-import hierarchical
-import kmeans
 import matplotlib.pyplot as plt
-from matplotlib import rcParams
 import metrics
 import numpy as np
 import pca
 import plot_data
-rcParams.update({'figure.autolayout': True})
 
 # (1) load data
-X,Y = load_iris.load_iris()
+iris = data_iris.iris()
+X,Y = iris.load()
 # (2) perform pca
 use_pca = True
 R = X
@@ -30,6 +27,7 @@ model = gaussianmm.gaussianmm(ncluster,initialization)
 # (3) fit model
 niteration = 100
 model.fit(R,niteration,1e-3)
+print("Time fit: {}".format(model.time_fit))
 # (4) results
 print("Silhouette: {}".format(metrics.silhouette(R,model.clustersave[-1])))
 print("Purity: {}".format(metrics.purity(model.clustersave[-1],Y)))

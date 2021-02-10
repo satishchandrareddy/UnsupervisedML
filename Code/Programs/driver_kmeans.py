@@ -4,9 +4,6 @@ import create_data_cluster_sklearn
 import kmeans
 import matplotlib.pyplot as plt
 import numpy as np
-import plot_data
-import time
-import metrics
 
 # (1) generate data
 nsample = 200
@@ -22,6 +19,7 @@ model = kmeans.kmeans(ncluster,initialization)
 # (3) fit model
 niteration = 30
 model.fit(X,niteration)
+print("Time fit: {}".format(model.time_fit))
 # (4) plot results
 model.plot_objective(title="K Means Clustering",xlabel="Iteration",ylabel="Objective")
 # plot initial data with initial means
