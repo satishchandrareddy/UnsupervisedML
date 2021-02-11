@@ -14,9 +14,11 @@ class dbscan(clustering_base.clustering_base):
         self.objectivesave = []
         self.list_label = ["unvisited" for _ in range(self.nsample)]
         self.clustersave = [(-1)*np.ones((self.nsample))]
+        self.nneighbours = 0
 
     def neighbours(self,Xidx):
         dist = np.sqrt(np.sum(np.square(Xidx - self.X),axis=0))
+        self.nneighbours += 1
         return list(np.where(dist<=self.epsilon)[0])
     
     def add_points(self,list_seed,list_idx):
@@ -24,7 +26,7 @@ class dbscan(clustering_base.clustering_base):
         for idx in list_idx:
             if self.list_label[idx] == "unvisited" or self.list_label[idx] == "noise":
                 list_seed.append(idx)
-        return list_seed
+        return list(set(list_seed))
 
     def update_cluster_assignment(self,cluster_number,idx):
     	list_cluster = deepcopy(self.clustersave[-1])
@@ -34,6 +36,7 @@ class dbscan(clustering_base.clustering_base):
     def extend_cluster(self,cluster_number,idx,list_neighbours):
         list_seed = deepcopy(list_neighbours)
         while len(list_seed)> 0:
+            #print("list_seed: {}".format(list_seed))
             idx_check = list_seed[0]
             list_seed.pop(0)
             if self.list_label[idx_check] == "noise":

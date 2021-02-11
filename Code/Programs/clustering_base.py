@@ -15,10 +15,10 @@ class clustering_base:
     def fit(self,X):
         pass
 
-    def get_index(self,nlevel,cluster):
-        # cluster (integer) = cluster number
+    def get_index(self,nlevel,cluster_number):
+        # cluster_number (integer) = cluster number
         # return indices of samples in clustersave[nlevel] = cluster_number
-        return np.where(np.absolute(self.clustersave[nlevel]-cluster)<1e-5)[0]
+        return np.where(np.absolute(self.clustersave[nlevel]-cluster_number)<1e-5)[0]
 
     def plot_objective(self,title="",xlabel="",ylabel=""):
         # plot objective function if data is collected
@@ -41,8 +41,9 @@ class clustering_base:
         scat = ax.scatter(self.X[0,:],self.X[1,:],color=cm.jet(color),marker="o",s=15)
 
     def plot_cluster_animation(self,nlevel=-1,interval=50,title="",xlabel="",ylabel=""):
-        # create animation for cluster assignments for dataset clusterlevel[level] 
+        # create animation for cluster assignments in self.clustersave[level] 
         # for level = 0,1,...,nlevel
+        # interval is the time (in milliseconds) between frames in animation 
         fig,ax = plt.subplots(1,1)
         ax.set_title(title)
         ax.set_xlabel(xlabel)
@@ -52,16 +53,16 @@ class clustering_base:
             nframe = nframe + 1 + nlevel
         else:
             nframe = nlevel
+        # scatter plot all data points in same color
         scat = ax.scatter(self.X[0,:],self.X[1,:],color=cm.jet(0),marker="o",s=15)
-
+        # update function for animation change color according to cluster assignment
         def update(i,scat,clustersave,ncluster):
             array_color_data = (1+self.clustersave[i])/(self.ncluster+1e-16)
             scat.set_color(cm.jet(array_color_data))
             return scat,
-
+        # create animation
         ani = animation.FuncAnimation(fig=fig, func=update, frames = nframe,
             fargs=[scat,self.clustersave,self.ncluster], repeat_delay=1000, repeat=True, interval=interval, blit=True)
-
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
         #ani.save('Clustering_Animation.mp4', writer='ffmpeg')

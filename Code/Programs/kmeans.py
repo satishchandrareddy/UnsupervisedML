@@ -47,7 +47,7 @@ class kmeans(clustering_base.clustering_base):
         # update cluster_assignment for this iteration
         self.clustersave.append(np.argmin(dist,axis=0))
 
-    def compute_objective(self,dist):
+    def update_objective(self,dist):
         # compute sum of squares of distance to nearest cluster mean
         self.objectivesave.append(np.sum(np.min(dist,axis=0)))
 
@@ -84,7 +84,7 @@ class kmeans(clustering_base.clustering_base):
             #print("dist: {}".format(dist))
             # determine cluster
             self.update_cluster_assignment(dist)
-            self.compute_objective(dist)
+            self.update_objective(dist)
             if verbose:
                 print("Iteration: {}  Objective Function: {}".format(i,self.objectivesave[-1]))
             # update_mean
@@ -136,4 +136,3 @@ class kmeans(clustering_base.clustering_base):
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
         #ani.save('KMeans_Animation.mp4', writer='ffmpeg')
-        plt.show()
