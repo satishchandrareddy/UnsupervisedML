@@ -23,9 +23,8 @@ class clustering_base:
     def plot_objective(self,title="",xlabel="",ylabel=""):
         # plot objective function if data is collected
         if len(self.objectivesave)>0:
-            fig = plt.subplots(1,1)
-            list_iteration = list(range(len(self.objectivesave)))
-            plt.plot(list_iteration,self.objectivesave,'b-',marker="o",markersize=5)
+            fig = plt.figure()
+            plt.plot(self.objectivesave,'b-',marker="o",markersize=5)
             plt.title(title)
             plt.xlabel(xlabel)
             plt.ylabel(ylabel)
@@ -62,7 +61,7 @@ class clustering_base:
             return scat,
         # create animation
         ani = animation.FuncAnimation(fig=fig, func=update, frames = nframe,
-            fargs=[scat,self.clustersave,self.ncluster], repeat_delay=1000, repeat=True, interval=interval, blit=True)
+            fargs=[scat,self.clustersave,self.ncluster], repeat_delay=5000, repeat=True, interval=interval, blit=True)
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
         #ani.save('Clustering_Animation.mp4', writer='ffmpeg')

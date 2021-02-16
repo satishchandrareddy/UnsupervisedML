@@ -6,7 +6,7 @@ import numpy as np
 from sklearn import datasets
 from sklearn.preprocessing import StandardScaler
 
-# Datasets from sklearn - see also UnsupervisedML/Examples/Section02/SklearnDatasets.ipynb
+# Datasets from sklearn - see also UnsupervisedML/Examples/Section02/sklearnDatasets.ipynb
 def create_data_cluster(n_samples,case):
 	if case == "aniso":
 		X, y = datasets.make_blobs(n_samples=n_samples, random_state=170)
@@ -22,9 +22,10 @@ def create_data_cluster(n_samples,case):
 		X,y = datasets.make_blobs(n_samples=n_samples,cluster_std=[1.0, 2.5, 0.5], random_state=170)
 	elif case == "varied_blobs2":
 		X,y = datasets.make_blobs(n_samples=n_samples,cluster_std=[1.5, 3.5, 0.8], random_state=170)
-	print("Number of dimensions: {} Number of Samples: {}".format(X.shape[1],X.shape[0]))
+	print("Case: {}  Number of dimensions: {} Number of Samples: {}".format(case,X.shape[1],X.shape[0]))
+	# create scaler to translate by sample mean and scale by standard deviation
 	scaler = StandardScaler()
-	# translate by sample mean and scale by standard deviation
+	# take transpose so sample axis is column
 	return scaler.fit_transform(X).T
 
 if __name__ == "__main__":

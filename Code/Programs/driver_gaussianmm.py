@@ -6,12 +6,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # (1) generate data
-# comment out seed line to generate different set of random numbers
-np.random.seed(31)
-nsample = 200
+nsample = 500
 case = "varied_blobs1"
 X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
 # (2) create model
+# comment out seed line to generate different set of random numbers
+np.random.seed(31)
 ncluster = 3
 initialization = "random"
 model = gaussianmm.gaussianmm(ncluster,initialization)
@@ -28,5 +28,5 @@ model.plot_cluster(nlevel=0)
 # plot final clusters
 model.plot_cluster(nlevel=-1)
 # animation
-model.plot_cluster_animation(nlevel=-1,interval=400,title="Gaussian Mixture Model",xlabel="Relative Salary",ylabel="Relative Purchases")
+model.plot_cluster_animation(nlevel=-1,interval=200,title="Gaussian Mixture Model",xlabel="Relative Salary",ylabel="Relative Purchases")
 plt.show()
