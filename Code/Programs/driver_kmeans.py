@@ -21,11 +21,13 @@ niteration = 30
 model.fit(X,niteration)
 print("Time fit: {}".format(model.time_fit))
 # (4) plot results
-model.plot_objective(title="K Means Clustering",xlabel="Iteration",ylabel="Objective")
+model.plot_objective(title="K Means Clustering Dataset: " +case, xlabel="Iteration", ylabel="Objective")
 # plot initial data with initial means
-model.plot_cluster(0,title="Data and Initial Means")
+model.plot_cluster(0,title="Initial Means & Datset: "+case, xlabel="Feature x0", ylabel="Feature x1")
 # plot final clusters
-model.plot_cluster(-1,title="K Means Clustering")
+model.plot_cluster(-1,title="K Means Clustering Dataset: "+case,
+	xlabel="Feature x0", ylabel="Feature x1")
 # animation
-model.plot_cluster_animation(nlevel=-1,interval=800,title="K Means Clustering",xlabel="Relative Salary", ylabel="Relative Purchases")
+model.plot_cluster_animation(nlevel=-1,interval=800,title="K Means Clustering Dataset: "+case,
+	xlabel="Feature x0", ylabel="Feature x1")
 plt.show()

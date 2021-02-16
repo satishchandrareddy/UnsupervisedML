@@ -5,7 +5,7 @@ import create_data_cluster_sklearn
 import numpy as np
 import matplotlib.pyplot as plt
 
-nsample = 500
+nsample = 200
 case = "varied_blobs1"
 X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
 

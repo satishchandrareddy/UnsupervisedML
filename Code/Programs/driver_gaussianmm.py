@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # (1) generate data
-nsample = 500
+nsample = 200
 case = "varied_blobs1"
 X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
 # (2) create model
@@ -24,9 +24,12 @@ print("Fitting time: {}".format(model.time_fit))
 # plot loglikelihood
 model.plot_objective(title="Gaussian Mixture Model",xlabel="Iteration",ylabel="Log Likelihood")
 # plot initial data with initial means
-model.plot_cluster(nlevel=0)
+model.plot_cluster(nlevel=0,title="Initial Gaussians & Dataset: "+case,
+	xlabel="Feature x0", ylabel="Feature x1")
 # plot final clusters
-model.plot_cluster(nlevel=-1)
+model.plot_cluster(nlevel=-1,title="Gaussian Mixture Model Dataset: "+case,
+	xlabel="Feature x0", ylabel="Feature x1")
 # animation
-model.plot_cluster_animation(nlevel=-1,interval=200,title="Gaussian Mixture Model",xlabel="Relative Salary",ylabel="Relative Purchases")
+model.plot_cluster_animation(nlevel=-1,interval=200,title="Gaussian Mixture Model Dataset: "+case,
+	xlabel="Feature x0", ylabel="Feature x1")
 plt.show()

@@ -28,7 +28,7 @@ class dbscan(clustering_base.clustering_base):
         self.initialize_algorithm()
         cluster_number = -1
         for idx in range(self.nsample):
-            # if point is processed already, then pass
+            # if point is processed already, then continue
             if self.list_label[idx] != "unvisited":
                 continue
             # determine neighbours
@@ -55,9 +55,9 @@ class dbscan(clustering_base.clustering_base):
         # create a new cluster with label cluster_number and points (indices) in list_neighbour
         # list cluster is list of  points (indices) in cluster
         list_cluster = []
-        # self.array_cluster tracks if point has been in list_cluster previously
-        self.array_cluster = np.zeros((self.nsample))
-        list_cluster = self.add_points(list_cluster,list_neighbour)
+        # in_cluster tracks if point has been in list_cluster previously
+        in_cluster = [False for _ in range(self.nsample)]
+        list_cluster,in_cluster = self.add_points(list_cluster,in_cluster,list_neighbour)
         while len(list_cluster)> 0:
             idx_check = list_cluster[0]
             list_cluster.pop(0)
@@ -71,22 +71,22 @@ class dbscan(clustering_base.clustering_base):
                 new_neighbours = self.neighbours(idx_check)
                 if len(new_neighbours)>= self.minpts:
                     self.list_label[idx_check] = "core"
-                    list_cluster = self.add_points(list_cluster,new_neighbours)
+                    list_cluster,in_cluster = self.add_points(list_cluster,in_cluster,new_neighbours)
                 else:
                     self.list_label[idx_check] = "border"
     
-    def add_points(self,list_cluster,list_idx):
+    def add_points(self,list_cluster,in_cluster,list_idx):
         # add points from list_idx to list_cluster and return updated list_cluster
         for idx in list_idx:
             # add point only if not visited or noise and not previously in list_cluster
-            if (self.list_label[idx] == "unvisited" or self.list_label[idx] == "noise") and (self.array_cluster[idx]==0.0):
-                # add point to cluster and update array cluster
+            if (self.list_label[idx] == "unvisited" or self.list_label[idx] == "noise") and (not in_cluster[idx]):
+                # add point to cluster and update in_cluster
                 list_cluster.append(idx)
-                self.array_cluster[idx] = 1.0
-        return list_cluster
+                in_cluster[idx] = True
+        return list_cluster, in_cluster
 
     def update_cluster_assignment(self,cluster_number,idx):
-        # update clustersave with new cluster assignments
+        # update clustersave with new cluster assignment
         if self.animation:
             list_cluster = deepcopy(self.clustersave[-1])
             list_cluster[idx] = cluster_number

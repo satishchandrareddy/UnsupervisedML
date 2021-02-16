@@ -8,8 +8,8 @@ import plot_data
 import time
 
 # (1) generate data
-nsample = 300
-case = "varied_blobs2"
+nsample = 200
+case = "varied_blobs1"
 X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
 # comment out seed line to generate different sets of random numbers
 # loop over number of clusters to find

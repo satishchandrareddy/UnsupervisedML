@@ -2,10 +2,9 @@
 # Complexity for DBSCAN
 
 import create_data_cluster_sklearn
-from sklearn.cluster import DBSCAN
+import dbscan
 import matplotlib.pyplot as plt
 import numpy as np
-import time
 
 # (1) generate data
 nsample = 32000
@@ -19,14 +18,13 @@ nrun = 1
 for idx in range(np.size(array_ndim)):
     for _ in range(nrun):
         # (2) create model
-        minpts = 5
+        minpt = 5
         epsilon = 0.18
-        model = DBSCAN(eps=epsilon,min_samples=minpts,animation=False)
+        model = dbscan.dbscan(minpt,epsilon,animation=False)
         # (3) fit model
         ndim = array_ndim[idx]
-        time_start = time.time()
-        model.fit(X[:,0:ndim].T)
-        array_time[idx] += time.time() - time_start
+        model.fit(X[:,0:ndim])
+        array_time[idx] += model.time_fit
         #print("Number Neighbours: {}".format(model.nneighbours))
     print("Dimension: {}  Time Fit: {}".format(ndim,array_time[idx]))
 
