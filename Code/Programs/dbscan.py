@@ -33,7 +33,7 @@ class dbscan(clustering_base.clustering_base):
                 continue
             # determine neighbours
             list_neighbour = self.neighbours(idx)
-            # determine if core point
+            # determine if noise => no need to update cluster assignment as assignment remains -1
             if len(list_neighbour) < self.minpts:
                 self.list_label[idx] = "noise"
                 continue
@@ -47,9 +47,9 @@ class dbscan(clustering_base.clustering_base):
         self.time_fit = time.time() - time_start
 
     def neighbours(self,idx):
-        # return list of indices of points within distance epsilon of point idx
-        dist = np.sum(np.square(self.X[:,[idx]] - self.X),axis=0)
-        return np.where(dist<=self.epsilon2)[0]
+        # return list of indices of points within distance^2 = epsilon^2 of point idx
+        dist2 = np.sum(np.square(self.X[:,[idx]] - self.X),axis=0)
+        return list(np.where(dist2<=self.epsilon2)[0])
 
     def extend_cluster(self,cluster_number,list_neighbour):
         # create a new cluster with label cluster_number and points (indices) in list_neighbour
