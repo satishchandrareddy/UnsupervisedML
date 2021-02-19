@@ -18,7 +18,8 @@ initialization = "random"
 model = kmeans.kmeans(ncluster,initialization)
 # (3) fit model
 niteration = 30
-model.fit(X,niteration)
+tolerance = 1e-5
+model.fit(X,niteration,tolerance)
 print("Time fit: {}".format(model.time_fit))
 # (4) plot results
 model.plot_objective(title="K Means Clustering Dataset: " +case, xlabel="Iteration", ylabel="Objective")

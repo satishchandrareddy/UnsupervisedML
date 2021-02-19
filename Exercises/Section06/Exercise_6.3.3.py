@@ -10,32 +10,32 @@ import numpy as np
 nsample = 64000
 case = "varied_blobs1"
 X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
-array_ndim = np.array([50, 100])
-array_time = np.zeros((np.size(array_ndim)))
+array_nsample = np.array([1000,2000,4000,8000,16000,32000,64000])
+array_time = np.zeros((np.size(array_nsample)))
 
 # (2) generate time data
-nrun = 1
-for idx in range(np.size(array_ndim)):
+nrun = 5
+for idx in range(np.size(array_nsample)):
     for _ in range(nrun):
         # (2) create model
         ncluster = 3
         model = kmeans.kmeans(3,"random")
         # (3) fit model
-        ndim = array_ndim[idx]
-        model.fit(X[:,0:ndim],20,1e-4,False)
+        nsample = array_nsample[idx]
+        model.fit(X[:,0:nsample],20,1e-4,False)
         array_time[idx] += model.time_fit
-    print("Dimension: {}  Time Fit: {}".format(ndim,array_time[idx]))
+    print("Dimension: {}  Time Fit: {}".format(nsample,array_time[idx]))
 
 # determine power
-log_ndim = np.log(array_ndim)
+log_nsample = np.log(array_nsample)
 log_time = np.log(array_time)
-coeff = np.polyfit(log_ndim,log_time,1)
+coeff = np.polyfit(log_nsample,log_time,1)
 p = np.poly1d(coeff)
-plogndim = p(log_ndim)
+plognsample = p(log_nsample)
 print("Power: {}".format(coeff[0]))
 plt.figure()
-plt.plot(log_ndim,log_time,"ro",label="Data")
-plt.plot(log_ndim,plogndim,"b-",label="Fit")
+plt.plot(log_nsample,log_time,"ro",label="Data")
+plt.plot(log_nsample,plognsample,"b-",label="Fit")
 plt.xlabel("Log Dimension")
 plt.ylabel("Log Time")
 plt.legend()
