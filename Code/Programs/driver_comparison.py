@@ -16,11 +16,11 @@ cases = ["noisy_circles", "noisy_moons", "blobs", "aniso", "varied_blobs1", "var
 X = {case : create_data_cluster_sklearn.create_data_cluster(nsample, case) for case in cases}
 
 # models:
-models = ["K-Means", "GaussianMM", "DBSCAN"]
+models = ["K Means", "GaussianMM", "DBSCAN"]
 
 # pick datasets:
-#list_dataset = ["blobs", "varied_blobs1", "varied_blobs2"]
-list_dataset = ["noisy_circles", "noisy_moons", "aniso"]
+list_dataset = ["blobs", "varied_blobs1", "varied_blobs2"]
+#list_dataset = ["noisy_circles", "noisy_moons", "aniso"]
 fig, axes = plt.subplots(len(list_dataset), len(models), figsize=(8,12), sharey=True)
 for i,dataset in enumerate(list_dataset):
     print("Dataset: {}".format(dataset))
@@ -29,42 +29,42 @@ for i,dataset in enumerate(list_dataset):
         if j == 0:
     	    axes[i,j].set_ylabel(dataset)
         if dataset == "blobs":
-    	    if model == "K-Means":
+    	    if model == "K Means":
     		    mod = kmeans.kmeans(ncluster=3, initialization='kmeans++')
     	    elif model == "GaussianMM":
     		    mod = gaussianmm.gaussianmm(ncluster=3, initialization='kmeans++')
     	    elif model == "DBSCAN":
     		    mod = dbscan.dbscan(epsilon=0.18, minpts = 5)
         elif dataset == "varied_blobs1":
-    	    if model == "K-Means":
+    	    if model == "K Means":
     		    mod = kmeans.kmeans(ncluster=3, initialization='kmeans++')
     	    elif model == "GaussianMM":
     		    mod = gaussianmm.gaussianmm(ncluster=3, initialization='kmeans++')
     	    elif model == "DBSCAN":
     		    mod = dbscan.dbscan(epsilon=0.18, minpts = 5)
         elif dataset == "varied_blobs2":
-    	    if model == "K-Means":
+    	    if model == "K Means":
     		    mod = kmeans.kmeans(ncluster=3, initialization='kmeans++')
     	    elif model == "GaussianMM":
     		    mod = gaussianmm.gaussianmm(ncluster=3, initialization='kmeans++')
     	    elif model == "DBSCAN":
     		    mod = dbscan.dbscan(epsilon=0.18, minpts = 5)
         elif dataset == "aniso":
-    	    if model == "K-Means": 
+    	    if model == "K Means": 
     		    mod = kmeans.kmeans(ncluster=3, initialization='kmeans++')
     	    elif model == "GaussianMM":
     		    mod = gaussianmm.gaussianmm(ncluster=3, initialization='kmeans++')
     	    elif model == "DBSCAN":
     		    mod = dbscan.dbscan(epsilon=0.18, minpts = 5)
         elif dataset == "noisy_circles":
-    	    if model == "K-Means": 
+    	    if model == "K Means": 
     		    mod = kmeans.kmeans(ncluster=2, initialization='kmeans++')
     	    elif model == "GaussianMM":
     		    mod = gaussianmm.gaussianmm(ncluster=2, initialization='kmeans++')
     	    elif model == "DBSCAN":
     		    mod = dbscan.dbscan(epsilon=0.18, minpts = 5)
         elif dataset == "noisy_moons":
-    	    if model == "K-Means": 
+    	    if model == "K Means": 
     		    mod = kmeans.kmeans(ncluster=2, initialization='kmeans++')
     	    elif model == "GaussianMM":
     		    mod = gaussianmm.gaussianmm(ncluster=2, initialization='kmeans++')

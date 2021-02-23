@@ -16,78 +16,32 @@ class gaussianmm(clustering_base.clustering_base):
         self.initialization = initialization
 
     def initialize_algorithm(self):
-        # initial clusters:
+        # determine initial means, covariances, and weights for gaussians in mixture
         self.clustersave = [(-1)*np.ones((self.nsample))]
         self.objectivesave = []
-        # initialize means, covariances, and weights
+        # initialize means using "kmeans++" or "random" approaches
         mean = []
         if self.initialization == "kmeans++":
             idx = np.random.randint(self.X.shape[1])
             mean.append(self.X[:,idx:idx+1])
             for count in range(1,self.ncluster):
-                dist = self.compute_distance(self.X,mean)
+                dist2 = self.compute_distance2(mean)
                 # pick data point whose distance squared from nearest cluster mean is greatest
-                idx = np.argmax(np.min(dist,axis=0))                  
-                mean.append(self.X[:,idx:idx+1])
+                idx = np.argmax(np.min(dist2,axis=0))                  
+                mean.append(self.X[:,[idx]])
         else:
-            array_idx = np.random.randint(low=0,high=self.X.shape[1],size=self.ncluster)
-            for count in range(self.ncluster):
-                mean.append(self.X[:,array_idx[count]:array_idx[count]+1])
-        # store in array
+            # pick initial means at random
+            # randomly pick ncluster indices from 0,1,2,...,nsample-1 and create list of initial means
+            array_idx = np.random.choice(self.X.shape[1],self.ncluster)
+            mean = [self.X[:,[array_idx[count]]] for count in range(self.ncluster)]
+        # meansave is list of list of means
         self.meansave = [mean]
-        # initialize weights
+        # initialize weights = 1/# of clusters for all gaussians
         self.weightsave = [[1/self.ncluster for _ in range(self.ncluster)]]
-        # initialize covariance matrix
+        # initialize covariance matrices as same for all gaussians
         Xmm = self.X - np.mean(self.X,axis=1,keepdims=True)
         Sigma = np.dot(Xmm,Xmm.T)/self.nsample
         self.Sigmasave = [[Sigma for _ in range(self.ncluster)]]
-
-    def compute_distance(self,X,list_mean):
-        # compute distance between each sample in X and each mean in list_cluster
-        dist = np.zeros((len(list_mean),X.shape[1]))
-        # loop over means in list_mean
-        for count in range(len(list_mean)):
-            dist[count,:] = np.sum(np.square(X-list_mean[count]),axis=0)
-        return dist
-
-    def expectation(self):
-        # update gammas
-        weighted_normal = np.zeros((self.ncluster,self.nsample))
-        for k in range(self.ncluster):
-            weighted_normal[k,:] = self.weightsave[-1][k]*normal.normal_pdf_vectorized(self.X,self.meansave[-1][k],self.Sigmasave[-1][k])
-        self.gamma = weighted_normal/np.sum(weighted_normal,axis=0,keepdims=True)
-        # compute log likelihood and save
-        self.objectivesave.append(np.sum(np.log(np.sum(weighted_normal,axis=0))))
-        # update cluster assignments
-        self.update_cluster_assignment()
-
-    def maximization(self):
-        # compute number of points in each cluster
-        self.N = np.sum(self.gamma,axis=1)
-        # compute mean, Sigma, and weight for each cluster
-        list_mean = []
-        list_Sigma = []
-        list_weight = []
-        for k in range(self.ncluster):
-            mean = np.sum(self.X*self.gamma[k,:],axis=1,keepdims=True)/self.N[k]
-            list_mean.append(mean)
-            list_weight.append(self.N[k]/self.nsample)
-            Xmm = self.X - mean
-            list_Sigma.append(np.dot(self.gamma[k,:]*Xmm,Xmm.T)/self.N[k])
-        self.meansave.append(list_mean)
-        self.weightsave.append(list_weight)
-        self.Sigmasave.append(list_Sigma)
-
-    def compute_diff(self):
-        # determine sum of distances between current and previous means
-        diff = 0
-        for k in range(self.ncluster):
-            diff = max(diff,np.sqrt(np.sum(np.square(self.meansave[-1][k]-self.meansave[-2][k]))))
-        return diff
-
-    def update_cluster_assignment(self):
-        # determine cluster index for each point in data set for current iteration
-        self.clustersave.append(np.argmax(self.gamma,axis=0))
 
     def fit(self,X,max_iter,tolerance=1e-5,verbose=True):
         time_start = time.time()
@@ -101,6 +55,8 @@ class gaussianmm(clustering_base.clustering_base):
         while (count<=max_iter and diff>tolerance):
             # expectation step
             self.expectation()
+            # update cluster assignment
+            self.update_cluster_assignment()
             # maximization step
             self.maximization()
             # print results
@@ -110,6 +66,51 @@ class gaussianmm(clustering_base.clustering_base):
             diff = self.compute_diff()
             count += 1
         self.time_fit = time.time() - time_start
+
+    def expectation(self):
+        # expectation step - update conditional probabilities
+        weighted_normal = np.zeros((self.ncluster,self.nsample))
+        for k in range(self.ncluster):
+            weighted_normal[k,:] = self.weightsave[-1][k]*normal.normal_pdf_vectorized(self.X,self.meansave[-1][k],self.Sigmasave[-1][k])
+        self.gamma = weighted_normal/np.sum(weighted_normal,axis=0,keepdims=True)
+        # compute log likelihood and append to objectivesave
+        self.objectivesave.append(np.sum(np.log(np.sum(weighted_normal,axis=0))))
+
+    def maximization(self):
+        # compute number of points in each cluster
+        self.M = np.sum(self.gamma,axis=1)
+        # compute mean, Sigma, and weight for each cluster
+        list_mean = []
+        list_Sigma = []
+        list_weight = []
+        for k in range(self.ncluster):
+            mean = np.sum(self.X*self.gamma[k,:],axis=1,keepdims=True)/self.M[k]
+            list_mean.append(mean)
+            list_weight.append(self.M[k]/self.nsample)
+            Xmm = self.X - mean
+            list_Sigma.append(np.matmul(self.gamma[k,:]*Xmm,Xmm.T)/self.M[k])
+        self.meansave.append(list_mean)
+        self.weightsave.append(list_weight)
+        self.Sigmasave.append(list_Sigma)
+
+    def compute_distance2(self,list_mean):
+        # dist2[i,j] = distance squared between mean i and point j 
+        dist2 = np.zeros((len(list_mean),self.X.shape[1]))
+        # loop over means in list_mean
+        for count in range(len(list_mean)):
+            dist2[count,:] = np.sum(np.square(self.X-list_mean[count]),axis=0)
+        return dist2
+
+    def update_cluster_assignment(self):
+        # determine cluster index for each point in data set for current iteration
+        self.clustersave.append(np.argmax(self.gamma,axis=0))
+
+    def compute_diff(self):
+        # determine sum of distances between current and previous means
+        diff = 0
+        for k in range(self.ncluster):
+            diff = max(diff,np.sqrt(np.sum(np.square(self.meansave[-1][k]-self.meansave[-2][k]))))
+        return diff
 
     def plot_cluster(self,nlevel,plot_ellipse=True,title="",xlabel="",ylabel=""):
         # plot final clusters and means
@@ -137,7 +138,7 @@ class gaussianmm(clustering_base.clustering_base):
         else:
             nframe = nlevel
         
-        # create dummy ellipse containers
+        # list_object contains ellipse patches and scatter plot for data
         list_object = []
         for cluster in range(self.ncluster):
             ell = Ellipse(xy=np.array([0,0]), width=1, height=1, angle=0, color=cm.jet((cluster+1)/self.ncluster), alpha=0.4, visible=False)
@@ -149,7 +150,7 @@ class gaussianmm(clustering_base.clustering_base):
         list_object.insert(0,scat)
 
         def update(i,list_object,clustersave,meansave,Covsave,weightsave):
-            # update ellipse details for each cluster
+            # update mean, width, height, angle for normal pdf contour for each cluster
             nellipse = len(list_object)-1
             for cluster in range(nellipse):
                 mean, width, height, angle = normal.create_ellipse_patch_details(meansave[i][cluster],
@@ -159,12 +160,13 @@ class gaussianmm(clustering_base.clustering_base):
                 list_object[cluster+1].height = height
                 list_object[cluster+1].angle = angle
                 list_object[cluster+1].set_visible(True)
+            # update color of data points based on cluster assignments
             list_object[0].set_color(cm.jet((np.squeeze(clustersave[i])+1)/(nellipse)))
             return list_object
 
         ani = animation.FuncAnimation(fig=fig, func=update, frames = nframe,
             fargs=[list_object,self.clustersave,self.meansave,self.Sigmasave,self.weightsave],
-            repeat_delay=1000, repeat=True, interval=interval, blit=True)
+            repeat_delay=0, repeat=True, interval=interval, blit=True)
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl
         #ani.save('GMM_Animation.mp4', writer='ffmpeg')
