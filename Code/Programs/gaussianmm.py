@@ -52,7 +52,7 @@ class gaussianmm(clustering_base.clustering_base):
         diff = 1e+10
         count = 0
         # loop 
-        while (count<=max_iter and diff>tolerance):
+        while (count<max_iter and diff>tolerance):
             # expectation step
             self.expectation()
             # update cluster assignment
@@ -112,7 +112,7 @@ class gaussianmm(clustering_base.clustering_base):
             diff = max(diff,np.sqrt(np.sum(np.square(self.meansave[-1][k]-self.meansave[-2][k]))))
         return diff
 
-    def plot_cluster(self,nlevel,plot_ellipse=True,title="",xlabel="",ylabel=""):
+    def plot_cluster(self,nlevel,title="",xlabel="",ylabel=""):
         # plot final clusters and means
         fig,ax = plt.subplots(1,1)
         ax.set_title(title)
@@ -120,12 +120,11 @@ class gaussianmm(clustering_base.clustering_base):
         ax.set_ylabel(ylabel)
         array_color_data = (1+self.clustersave[nlevel])/self.ncluster
         scatter_data = ax.scatter(self.X[0,:],self.X[1,:], color=cm.jet(array_color_data), marker="o", s=15)
-        if plot_ellipse:
-            # plot Gaussian footprints
-            for cluster in range(self.ncluster):
-                mean, width, height, angle = normal.create_ellipse_patch_details(self.meansave[nlevel][cluster],self.Sigmasave[nlevel][cluster],self.weightsave[nlevel][cluster])
-                ell = Ellipse(xy=mean, width=width, height=height, angle=angle, color=cm.jet((cluster+1)/self.ncluster), alpha=0.5)
-                ax.add_patch(ell)
+        # plot contours of weighted normal distribution for each cluster
+        for cluster in range(self.ncluster):
+            mean, width, height, angle = normal.create_ellipse_patch_details(self.meansave[nlevel][cluster],self.Sigmasave[nlevel][cluster],self.weightsave[nlevel][cluster])
+            ell = Ellipse(xy=mean, width=width, height=height, angle=angle, color=cm.jet((cluster+1)/self.ncluster), alpha=0.5)
+            ax.add_patch(ell)
 
     def plot_cluster_animation(self,nlevel=-1,interval=500,title="",xlabel="",ylabel=""):
         fig,ax = plt.subplots(1,1)
@@ -144,15 +143,15 @@ class gaussianmm(clustering_base.clustering_base):
             ell = Ellipse(xy=np.array([0,0]), width=1, height=1, angle=0, color=cm.jet((cluster+1)/self.ncluster), alpha=0.4, visible=False)
             list_object.append(ell)
             ax.add_patch(ell)
-        # scatter plot of data
+        # insert scatter plot of data points as initial entry in list
         scat = ax.scatter(self.X[0,:], self.X[1,:], color = cm.jet(0), marker="o", s=15)
-        #list_object.append(scat)
         list_object.insert(0,scat)
 
         def update(i,list_object,clustersave,meansave,Covsave,weightsave):
             # update mean, width, height, angle for normal pdf contour for each cluster
             nellipse = len(list_object)-1
             for cluster in range(nellipse):
+                # call function to compute mean, width, height, angle for latest iteration
                 mean, width, height, angle = normal.create_ellipse_patch_details(meansave[i][cluster],
                     Covsave[i][cluster],weightsave[i][cluster])
                 list_object[cluster+1].set_center(mean)

@@ -10,12 +10,12 @@ def normal_pdf(X,mu,Cov):
     nfeature,nsample = X.shape
     detCov = np.linalg.det(Cov)
     invCov = np.linalg.inv(Cov)
-    output = np.zeros((1,nsample))
+    Z = np.zeros((1,nsample))
     for count in range(nsample):
-        prob = np.exp(-0.5*(np.dot((X[:,[count]]-mu).T,np.dot(invCov,(X[:,[count]]-mu)))))
-        output[0,count] = prob/np.sqrt(np.power(2*np.pi,nfeature)*detCov)
-    # output is dimension (1, m data points)
-    return output
+        prob = np.exp(-0.5*(np.dot((X[:,[count]]-mu).T,np.matmul(invCov,(X[:,[count]]-mu)))))
+        Z[0,count] = prob/np.sqrt(np.power(2*np.pi,nfeature)*detCov)
+    # Z has dimensions (1, m data points)
+    return Z
 
 def normal_pdf_vectorized(X,mu,Cov):
 	# Compute normal probability density function in arbitrary dimensions

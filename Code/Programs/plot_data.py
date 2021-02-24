@@ -34,17 +34,11 @@ def plot_cluster_distribution(cluster_assignment, class_label, figsize=(8,4), fi
     rcParams.update({'figure.autolayout': True})
     # adjust cluster labels (in case label is -1):
     nsample = np.size(cluster_assignment)
-    cluster_assignment_adjusted = deepcopy(cluster_assignment)
-    # relabel labels originally set as -1
-    for count in range(nsample):
-        if cluster_assignment[count] == -1:
-            cluster_assignment_adjusted[count] = -(count+1)
-    # determine set of labels:
-    list_cluster_label = list(set(cluster_assignment_adjusted))
-    ncluster = len(list_cluster_label)
+    # determine number of labels
+    ncluster = len(set(cluster_assignment))
     print("Number of Clusters: {}".format(ncluster))
     df = pd.DataFrame({'class': class_label,
-                        'cluster label': cluster_assignment_adjusted,
+                        'cluster label': cluster_assignment,
                         'cluster': np.ones(len(class_label))})
     counts = df.groupby(['cluster label', 'class']).sum()
     fig = counts.unstack(level=0).plot(kind='bar', subplots=True,
