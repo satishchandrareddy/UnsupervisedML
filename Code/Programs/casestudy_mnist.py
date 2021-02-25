@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import metrics
 import numpy as np
 import pca
-import plot_data
 
 # (1) set up data
 nsample = 6000
@@ -36,5 +35,5 @@ mnist.plot_image(X,seed,model.get_index(-1,4))
 mnist.plot_image(X,seed,model.get_index(-1,5))
 mnist.plot_image(X,seed,model.get_index(-1,6))
 model.plot_objective(title="Gaussian MM",xlabel="Iteration",ylabel="Objective")
-plot_data.plot_cluster_distribution(model.clustersave[-1],np.squeeze(Y),figsize=(8,4),figrow=2)
+metrics.plot_cluster_distribution(model.clustersave[-1],np.squeeze(Y),figsize=(8,4),figrow=2)
 plt.show()

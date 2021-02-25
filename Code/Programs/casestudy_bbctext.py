@@ -6,7 +6,6 @@ import pca
 import metrics
 import numpy as np
 import matplotlib.pyplot as plt
-import plot_data
 import time
 
 # (1) load data
@@ -35,6 +34,6 @@ print("Time fit: {}".format(model.time_fit))
 # (5) results
 print("Purity: {}".format(metrics.purity(model.clustersave[-1],np.squeeze(Y))))
 model.plot_objective(title="K Means",xlabel="Iteration",ylabel="Objective")
-plot_data.plot_cluster_distribution(model.clustersave[-1],Y,figsize=(8,4))
+metrics.plot_cluster_distribution(model.clustersave[-1],Y,figsize=(8,4))
 text.create_wordcloud(X,model.clustersave[-1],ncluster)
 plt.show()

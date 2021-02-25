@@ -2,7 +2,9 @@
 # cluster metrics functions
 
 from copy import deepcopy
+from matplotlib import rcParams
 import numpy as np
+import pandas as pd
 
 def silhouette(X,cluster_assignment):
     #Calculate the silhouette value for the dataset after cluster assignments have been determined
@@ -62,3 +64,19 @@ def purity(cluster_assignment,Y):
         # add maximum number
         total_number += np.max(count)
     return total_number/nsample
+
+def plot_cluster_distribution(cluster_assignment, class_label, figsize=(8,4), figrow=1):
+    rcParams.update({'figure.autolayout': True})
+    # adjust cluster labels (in case label is -1):
+    nsample = np.size(cluster_assignment)
+    # determine number of labels
+    ncluster = len(set(cluster_assignment))
+    print("Number of Clusters: {}".format(ncluster))
+    df = pd.DataFrame({'class': class_label,
+                        'cluster label': cluster_assignment,
+                        'cluster': np.ones(len(class_label))})
+    counts = df.groupby(['cluster label', 'class']).sum()
+    fig = counts.unstack(level=0).plot(kind='bar', subplots=True,
+                                        sharey=True, sharex=False,
+                                        layout=(figrow,int(ncluster/figrow)), 
+                                        figsize=figsize, legend=False)
