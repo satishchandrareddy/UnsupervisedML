@@ -17,6 +17,5 @@ print("Time fit: {}".format(model.time_fit))
 # (4) results
 print("Purity: {}".format(metrics.purity(model.clustersave[-3],Y)))
 print("Silhouette: {}".format(metrics.silhouette(X,model.clustersave[-3])))
-model.plot_cluster(-3,"Iris Clustering","Sepal Length","Sepal Width")
 plot_data.plot_cluster_distribution(model.clustersave[-3],Y)
 plt.show()

@@ -10,17 +10,16 @@ import gaussianmm
 import metrics
 
 # generate datasets
-np.random.seed(31)
 nsample = 1500
-cases = ["noisy_circles", "noisy_moons", "blobs", "aniso", "varied_blobs1", "varied_blobs2"]
-X = {case : create_data_cluster_sklearn.create_data_cluster(nsample, case) for case in cases}
+# uncomment one of the following lines
+#list_dataset = ["blobs", "varied_blobs1", "varied_blobs2"]
+list_dataset = ["noisy_circles", "noisy_moons", "aniso"]
+X = {case : create_data_cluster_sklearn.create_data_cluster(nsample, case) for case in list_dataset}
 
 # models:
 models = ["K Means", "GaussianMM", "DBSCAN"]
 
-# pick datasets:
-list_dataset = ["blobs", "varied_blobs1", "varied_blobs2"]
-#list_dataset = ["noisy_circles", "noisy_moons", "aniso"]
+# perform clustering and generate plot
 fig, axes = plt.subplots(len(list_dataset), len(models), figsize=(8,12), sharey=True)
 for i,dataset in enumerate(list_dataset):
     print("Dataset: {}".format(dataset))
