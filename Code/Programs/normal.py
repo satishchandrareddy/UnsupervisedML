@@ -40,6 +40,6 @@ def create_ellipse_patch_details(mu,Cov,weight,contour=2e-3):
 	U,Sigma,_ = np.linalg.svd(Cov)
 	width = 2*alpha*np.sqrt(Sigma[0])
 	height = 2*alpha*np.sqrt(Sigma[1])
-	angle = np.arctan(U[0,1]/(U[0,0]+1e-10))*180/np.pi
+	angle = np.arctan(U[1,0]/(U[0,0]+1e-10))*180/np.pi
 	# return mean, width, height, angle
 	return np.squeeze(mu), width, height, angle

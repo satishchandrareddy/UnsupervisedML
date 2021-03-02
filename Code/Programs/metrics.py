@@ -46,7 +46,7 @@ def dist(Xpoint,Xdataset):
     # compute distance between Xpoint and and each point in Xdataset
     return np.sqrt(np.sum(np.square(Xpoint - Xdataset),axis=0,keepdims=True))
 
-def purity(cluster_assignment,Y):
+def purity(cluster_assignment,class_assignment):
     nsample = np.size(cluster_assignment)
     cluster_assignment_adjusted = deepcopy(cluster_assignment)
     # relabel labels originally set as -1
@@ -60,21 +60,21 @@ def purity(cluster_assignment,Y):
         # determine indices for cluster label
         idx_cluster = np.where(np.absolute(cluster_assignment_adjusted - label)<1e-5)[0]
         # count number of times each class appears in cluster label
-        _,count = np.unique(Y[idx_cluster],return_counts=True)
+        _,count = np.unique(class_assignment[idx_cluster],return_counts=True)
         # add maximum number
         total_number += np.max(count)
     return total_number/nsample
 
-def plot_cluster_distribution(cluster_assignment, class_label, figsize=(8,4), figrow=1):
+def plot_cluster_distribution(cluster_assignment, class_assignment, figsize=(8,4), figrow=1):
     rcParams.update({'figure.autolayout': True})
     # adjust cluster labels (in case label is -1):
     nsample = np.size(cluster_assignment)
     # determine number of labels
     ncluster = len(set(cluster_assignment))
     print("Number of Clusters: {}".format(ncluster))
-    df = pd.DataFrame({'class': class_label,
+    df = pd.DataFrame({'class': class_assignment,
                         'cluster label': cluster_assignment,
-                        'cluster': np.ones(len(class_label))})
+                        'cluster': np.ones(len(class_assignment))})
     counts = df.groupby(['cluster label', 'class']).sum()
     fig = counts.unstack(level=0).plot(kind='bar', subplots=True,
                                         sharey=True, sharex=False,

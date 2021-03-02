@@ -33,42 +33,42 @@ for i,dataset in enumerate(list_dataset):
     	    elif model == "GaussianMM":
     		    mod = gaussianmm.gaussianmm(ncluster=3, initialization='kmeans++')
     	    elif model == "DBSCAN":
-    		    mod = dbscan.dbscan(epsilon=0.18, minpts = 5)
+    		    mod = dbscan.dbscan(minpts=5, epsilon=0.18)
         elif dataset == "varied_blobs1":
     	    if model == "K Means":
     		    mod = kmeans.kmeans(ncluster=3, initialization='kmeans++')
     	    elif model == "GaussianMM":
     		    mod = gaussianmm.gaussianmm(ncluster=3, initialization='kmeans++')
     	    elif model == "DBSCAN":
-    		    mod = dbscan.dbscan(epsilon=0.18, minpts = 5)
+    		    mod = dbscan.dbscan(minpts=5, epsilon=0.18)
         elif dataset == "varied_blobs2":
     	    if model == "K Means":
     		    mod = kmeans.kmeans(ncluster=3, initialization='kmeans++')
     	    elif model == "GaussianMM":
     		    mod = gaussianmm.gaussianmm(ncluster=3, initialization='kmeans++')
     	    elif model == "DBSCAN":
-    		    mod = dbscan.dbscan(epsilon=0.18, minpts = 5)
+    		    mod = dbscan.dbscan(minpts=5, epsilon=0.18)
         elif dataset == "aniso":
     	    if model == "K Means": 
     		    mod = kmeans.kmeans(ncluster=3, initialization='kmeans++')
     	    elif model == "GaussianMM":
     		    mod = gaussianmm.gaussianmm(ncluster=3, initialization='kmeans++')
     	    elif model == "DBSCAN":
-    		    mod = dbscan.dbscan(epsilon=0.18, minpts = 5)
+    		    mod = dbscan.dbscan(minpts=5, epsilon=0.18)
         elif dataset == "noisy_circles":
     	    if model == "K Means": 
     		    mod = kmeans.kmeans(ncluster=2, initialization='kmeans++')
     	    elif model == "GaussianMM":
     		    mod = gaussianmm.gaussianmm(ncluster=2, initialization='kmeans++')
     	    elif model == "DBSCAN":
-    		    mod = dbscan.dbscan(epsilon=0.18, minpts = 5)
+    		    mod = dbscan.dbscan(minpts=5, epsilon=0.18)
         elif dataset == "noisy_moons":
     	    if model == "K Means": 
     		    mod = kmeans.kmeans(ncluster=2, initialization='kmeans++')
     	    elif model == "GaussianMM":
     		    mod = gaussianmm.gaussianmm(ncluster=2, initialization='kmeans++')
     	    elif model == "DBSCAN":
-    		    mod = dbscan.dbscan(epsilon=0.18, minpts = 5)
+    		    mod = dbscan.dbscan(minpts=5, epsilon=0.18)
         # fit model
         print("Dataset: {}".format(dataset))
         if model == "DBSCAN":
