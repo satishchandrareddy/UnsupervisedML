@@ -9,7 +9,7 @@ class mnist:
     def __init__(self):
         self.root_dir = Path(__file__).resolve().parent.parent
 
-    def load(self,nsample):
+    def load_train(self,nsample):
     	# load mnist data
     	# create feature matrix with nsample data points 
 	    # read data from train files
@@ -27,6 +27,24 @@ class mnist:
 	    X1 = df1.values/255
 	    X2 = df2.values/255
 	    X = np.concatenate((X1,X2),axis=0).T
+	    # get requested number of training data samples
+	    X = X[:,:nsample]
+	    Y = Y[:nsample]
+	    print("X.shape: {} - Y.shape: {}".format(X.shape,Y.shape))
+	    return X,Y
+
+    def load_valid(self,nsample):
+    	# load mnist data
+    	# create feature matrix with nsample data points 
+	    # read data test
+	    df = pd.read_csv(self.root_dir / "Data_MNIST/MNIST_valid_10K.csv")
+	    # get labels and 
+	    Y = df["label"]
+	    # remove label column
+	    df = df.drop(columns="label")
+	    # create feature matrix from remaining data - divide by 255
+	    # concatenate and take transpose
+	    X = df.values.T/255
 	    # get requested number of training data samples
 	    X = X[:,:nsample]
 	    Y = Y[:nsample]
@@ -51,6 +69,7 @@ class mnist:
         for row in range(nrow):
             for col in range(ncol):
                 digit_image = np.flipud(np.reshape(X[:,array_idx_plot[idx]],(npixel_width,npixel_height)))
+                ax[row,col].set_aspect("equal")
                 ax[row,col].pcolormesh(digit_image,cmap="Greys")
                 idx +=1
 
