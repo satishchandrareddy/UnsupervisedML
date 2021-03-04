@@ -50,14 +50,13 @@ class mnist:
 	    print("X.shape: {} - class_label.shape: {}".format(X.shape,class_label.shape))
 	    return X,class_label
 
-    def plot_image(self,X,seed,array_idx):
+    def plot_image(self,X,seed):
         # create 5x5 subplot of mnist images
-        # X is feature matrix
+        # X is feature matrix (d features x M samples) should have at least 25 samples
         # seed is integer used to set up random seed
-        # array_idx is numpy array of least length 25
-        # choose 25 indices at random from array_idx -> these are images to be plotted
         np.random.seed(seed)
-        array_idx_plot = np.random.choice(array_idx,25,replace=False)
+        # randomly pick indices for 25 images to plot
+        array_idx_plot = np.random.choice(X.shape[1],25,replace=False)
         nrow = 5
         ncol = 5
         npixel_width = 28
@@ -74,13 +73,13 @@ class mnist:
                 idx +=1
 
 if __name__ == "__main__":
-	# create object
-	mnist_object = mnist()
 	# load data
 	nsample = 60000
+	mnist_object = mnist()
+	# if issues loading dataset because of memory constraints on your machine
+    # set nsample = 10000 or fewer and use line X,_ = mnist.load_valid(nsample)
 	X,_ = mnist_object.load_train(nsample)
 	# plot 25 random images from dataset
 	seed = 11
-	array_idx = np.arange(nsample)
-	mnist_object.plot_image(X,seed,array_idx)
+	mnist_object.plot_image(X,seed)
 	plt.show()
