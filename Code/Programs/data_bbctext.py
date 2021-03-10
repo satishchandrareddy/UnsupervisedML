@@ -12,11 +12,11 @@ class bbctext:
 
     def __init__(self):
         self.root_dir = Path(__file__).resolve().parent.parent
-    	# stop_word="english" removes common english words the, to, as
+    	# stop_word="english" removes common english words "the", "to", "as", ...
     	# set limits on doc frequency
         self.vectorizer = TfidfVectorizer(stop_words="english", max_df = 0.7, min_df = 0.001)
 
-    def load(self,nsample=2225):
+    def load(self,nsample):
         # read data from file
         df = pd.read_csv(self.root_dir / "Data_BBCText/bbc-text.csv")
         # select nsample documents and create feature matrix

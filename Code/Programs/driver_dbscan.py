@@ -9,8 +9,8 @@ nsample = 200
 case = "varied_blobs1"
 X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
 # (2) create model
-minpts = 4
-epsilon = 0.3
+minpts = 5
+epsilon = 0.18
 model = dbscan.dbscan(minpts,epsilon)
 # (3) fit model
 model.fit(X)

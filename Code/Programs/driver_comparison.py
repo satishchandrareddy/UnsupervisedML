@@ -76,17 +76,17 @@ for i,dataset in enumerate(list_dataset):
         else:
     	    mod.fit(X[dataset],100,1e-5,False)
         print("Time fit: {}".format(mod.time_fit))
-        # silhouette score
-        silhouette_score = metrics.silhouette(X[dataset],mod.clustersave[-1])
-        print("Silhouette Score: {}".format(silhouette_score))
+        # davies-bouldin 
+        db = metrics.davies_bouldin(X[dataset],mod.clustersave[-1])
+        print("Davies-Bouldin: {}".format(db))
         colors = (mod.clustersave[-1]+1)/mod.ncluster
         axes[i,j].scatter(X[dataset][0,:], X[dataset][1,:], color=cm.jet(colors),s=15)
         axes[i,j].set_xticklabels([])
         axes[i,j].set_yticklabels([])
         if i == 0:
-            title =  model + "\ns: {:.2f}  time: {:.3f}".format(silhouette_score,mod.time_fit)
+            title =  model + "\ndb:{:.2f} t:{:.3f}".format(db,mod.time_fit)
         else:
-            title = "s: {:.2f}  time: {:.3f}".format(silhouette_score,mod.time_fit)
+            title = "db: {:.2f} t:{:.3f}".format(db,mod.time_fit)
         axes[i,j].set_title(title)
     
 plt.show()

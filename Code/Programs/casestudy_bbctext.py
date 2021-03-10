@@ -1,4 +1,4 @@
-# driver_news_text.py
+# casestudy_news_text.py
 
 import data_bbctext
 import kmeans
@@ -8,10 +8,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 
-# (1) load data
+# (1) data
+nsample = 2225
 text = data_bbctext.bbctext()
-X,Y = text.load()
-# (2) PCA
+X,class_label = text.load(nsample)
+# pca
 R = X
 use_pca = True
 if use_pca:
@@ -21,19 +22,22 @@ if use_pca:
     model_pca.fit(X)
     R = model_pca.data_reduced_dimension(variance_capture=variance_capture)
     print("Time pca: {}".format(time.time() - time_pca_start))
-# (3) create model
+# (2) create model
 # initialization should be "random" or "kmeans++"
 np.random.seed(71)
 initialization = "random"
 ncluster = 5
 model = kmeans.kmeans(ncluster,initialization)
-# (4) fit model
+# (3) fit model
 max_iter = 50
-model.fit(R,max_iter)
+tolerance = 1e-4
+model.fit(R,max_iter,tolerance)
 print("Time fit: {}".format(model.time_fit))
-# (5) results
-print("Purity: {}".format(metrics.purity(model.clustersave[-1],np.squeeze(Y))))
+# (4) results
+level = -1
+print("Purity: {}".format(metrics.purity(model.clustersave[level],class_label)))
+print("Davies-Bouldin: {}".format(metrics.davies_bouldin(X,model.clustersave[level])))
 model.plot_objective(title="K Means",xlabel="Iteration",ylabel="Objective")
-metrics.plot_cluster_distribution(model.clustersave[-1],Y,figsize=(8,4))
-text.create_wordcloud(X,model.clustersave[-1],ncluster)
+metrics.plot_cluster_distribution(model.clustersave[level],class_label,figsize=(8,4))
+text.create_wordcloud(X,model.clustersave[level],ncluster)
 plt.show()

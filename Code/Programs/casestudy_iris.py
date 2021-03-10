@@ -1,4 +1,4 @@
-# driver_iris.py
+# casestudy_iris.py
 
 import data_iris
 import hierarchical
@@ -14,8 +14,8 @@ model = hierarchical.hierarchical()
 model.fit(X)
 print("Time fit: {}".format(model.time_fit))
 # (4) results
-final_level = 3
-print("Purity: {}".format(metrics.purity(model.clustersave[-final_level],class_label)))
-print("Silhouette: {}".format(metrics.silhouette(X,model.clustersave[-final_level])))
-metrics.plot_cluster_distribution(model.clustersave[-final_level],class_label)
+level = -3
+print("Purity: {}".format(metrics.purity(model.clustersave[level],class_label)))
+print("Davies-Bouldin: {}".format(metrics.davies_bouldin(X,model.clustersave[level])))
+metrics.plot_cluster_distribution(model.clustersave[level],class_label)
 plt.show()

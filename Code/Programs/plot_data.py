@@ -12,17 +12,18 @@ def plot_scatter(X,title="",xlabel="",ylabel=""):
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     
-def plot_scatter_class(X,Y,title="",xlabel="",ylabel=""):
+def plot_scatter_class(X,class_label,title="",xlabel="",ylabel=""):
     # create scatter plot of data in X (2d numpy array ndim x nsample)
-    # colour based on integer values in Y (1d numpy array)
-    list_classname = list(set(Y))
-    nclass = len(list_classname)
+    # color data points according to labels in class_label (1d numpy array)
+    list_class = np.unique(class_label)
+    nclass = len(list_class)
     # create figure
     fig, ax = plt.subplots()
     ax.set_title(title)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    for i,classname in enumerate(list_classname):
-        idx = np.where(Y == classname)[0]
-        ax.scatter(X[0,idx],X[1,idx],color = cm.hsv((i+1)/nclass), s=15, label = classname)
+    # plot x0 and x1 coordinates of dataset
+    for i,classname in enumerate(list_class):
+        idx = np.where(class_label == classname)[0]
+        ax.scatter(X[0,idx],X[1,idx],color = cm.hsv((i+1)/nclass), s=15, label = str(classname))
     ax.legend(loc="upper left")
