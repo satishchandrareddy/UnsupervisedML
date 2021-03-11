@@ -78,15 +78,17 @@ for i,dataset in enumerate(list_dataset):
         print("Time fit: {}".format(mod.time_fit))
         # davies-bouldin 
         db = metrics.davies_bouldin(X[dataset],mod.clustersave[-1])
+        s = metrics.silhouette(X[dataset],mod.clustersave[-1])
         print("Davies-Bouldin: {}".format(db))
+        print("Silhouette: {}".format(s))
         colors = (mod.clustersave[-1]+1)/mod.ncluster
         axes[i,j].scatter(X[dataset][0,:], X[dataset][1,:], color=cm.jet(colors),s=15)
         axes[i,j].set_xticklabels([])
         axes[i,j].set_yticklabels([])
         if i == 0:
-            title =  model + "\ndb:{:.2f} t:{:.3f}".format(db,mod.time_fit)
+            title =  model + "\ndb:{:.2f} s:{:.2f} t:{:.3f}".format(db,s,mod.time_fit)
         else:
-            title = "db: {:.2f} t:{:.3f}".format(db,mod.time_fit)
+            title = "db: {:.2f} s:{:.2f} t:{:.3f}".format(db,s,mod.time_fit)
         axes[i,j].set_title(title)
     
 plt.show()

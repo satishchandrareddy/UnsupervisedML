@@ -17,10 +17,10 @@ class iris:
         class_label = iris_df["species"].values
         # extract features
         self.list_feature = ["sepal_length", "sepal_width", "petal_length", "petal_width"]
-        features = iris_df[self.list_feature].values.T
-        print("Number of dimensions: {} Number of data points: {}".format(features.shape[0],features.shape[1]))
-        print("Number of class labels: {}".format(class_label.shape))
-        return features, class_label
+        X = iris_df[self.list_feature].values.T
+        print("Number of dimensions: {} Number of data points: {}".format(X.shape[0],X.shape[1]))
+        print("Number of class labels: {}".format(X.shape))
+        return X, class_label
 
     def plot(self,X,class_label):
         rcParams.update({"legend.fontsize": 6})
@@ -38,7 +38,7 @@ class iris:
             for col in range(ncol):
                 permutation = list_permutation[row][col]
                 Xnew = X[permutation,:]
-                for i,classname in enumerate(list_class):
+                for i,classname in enumerate(list_class_label):
                     idx = np.where(class_label == classname)[0]
                     axs[row,col].scatter(Xnew[0,idx],Xnew[1,idx],color = cm.hsv((i+1)/nclass), s=15, label=classname)		    
                     axs[row,col].set_xlabel(self.list_feature[list_permutation[row][col][0]])
