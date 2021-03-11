@@ -36,11 +36,13 @@ class iris:
         fig.suptitle("Iris Data")
         for row in range(nrow):
             for col in range(ncol):
-                permutation = list_permutation[row][col]
-                Xnew = X[permutation,:]
                 for i,classname in enumerate(list_class_label):
                     idx = np.where(class_label == classname)[0]
-                    axs[row,col].scatter(Xnew[0,idx],Xnew[1,idx],color = cm.hsv((i+1)/nclass), s=15, label=classname)		    
+                    # scatter plot in x0-x1 plane where x0,x1 are entries 0,1 from list_permutation
+                    axs[row,col].scatter(
+                        X[list_permutation[row][col][0],idx],
+                        X[list_permutation[row][col][1],idx],
+                        color = cm.hsv((i+1)/nclass), s=15, label=classname)		    
                     axs[row,col].set_xlabel(self.list_feature[list_permutation[row][col][0]])
                     axs[row,col].set_ylabel(self.list_feature[list_permutation[row][col][1]])
                     axs[row,col].legend(loc="upper left")
