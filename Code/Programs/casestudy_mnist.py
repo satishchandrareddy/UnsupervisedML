@@ -2,13 +2,11 @@
 
 import data_mnist
 import kmeans
-import gaussianmm
 import matplotlib.pyplot as plt
 import metrics
 import numpy as np
 import pca
 import time
-from sklearn.metrics import davies_bouldin_score
 
 # (1) set up data
 nsample = 60000
@@ -31,7 +29,6 @@ np.random.seed(31)
 initialization = "kmeans++"
 ncluster = 10
 model = kmeans.kmeans(ncluster,initialization)
-#model = gaussianmm.gaussianmm(ncluster,initialization)
 # (3) fit model
 max_iter = 100
 tolerance = 1e-4

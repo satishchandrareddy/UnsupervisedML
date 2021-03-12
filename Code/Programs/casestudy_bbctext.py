@@ -1,4 +1,4 @@
-# casestudy_news_text.py
+# casestudy_bbctext.py
 
 import data_bbctext
 import kmeans
@@ -11,6 +11,8 @@ import time
 # (1) data
 nsample = 2225
 text = data_bbctext.bbctext()
+# if issues loading dataset because of memory constraints on your machine
+# set nsample to be less than 2225
 X,class_label = text.load(nsample)
 # pca
 R = X

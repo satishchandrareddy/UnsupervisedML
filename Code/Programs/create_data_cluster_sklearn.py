@@ -1,4 +1,4 @@
-# create_data.py
+# create_data_cluster_sklearn.py
 
 import matplotlib.pyplot as plt
 from matplotlib import cm

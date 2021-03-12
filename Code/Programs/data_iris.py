@@ -1,4 +1,4 @@
-# load_iris.py
+# data_iris.py
 
 import matplotlib.pyplot as plt
 from matplotlib import cm

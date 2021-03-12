@@ -1,4 +1,4 @@
-# driver_pca.py
+# driver_pca_mnist.py
 
 import data_mnist
 import matplotlib.pyplot as plt
