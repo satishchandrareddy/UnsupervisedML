@@ -1,6 +1,6 @@
 # driver_kmeans.py
 
-import create_data_cluster_sklearn
+import create_dataset_sklearn
 import kmeans
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,7 +8,7 @@ import numpy as np
 # (1) generate data
 nsample = 200
 case = "varied_blobs1"
-X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
+X = create_dataset_sklearn.create_dataset(nsample,case)
 # (2) create model
 # Change seed to change random numbers
 # initialization should be "random" or "kmeans++"

@@ -1,7 +1,8 @@
-# Exercise5.3.1.py
+# Exercise_05.3.2.py
 # Complexity for DBSCAN
+# Run in folder UnsupervisedML/Code/Programs
 
-import create_data_cluster_sklearn
+import create_dataset_sklearn
 import dbscan
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,12 +10,12 @@ import numpy as np
 # (1) generate data
 nsample = 32000
 case = "varied_blobs1"
-X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
+X = create_dataset_sklearn.create_dataset(nsample,case)
 array_ndim = np.array([500, 1000, 2000, 4000, 8000, 16000, 32000])
 array_time = np.zeros((np.size(array_ndim)))
 
 # (2) generate time data
-nrun = 1
+nrun = 2
 for idx in range(np.size(array_ndim)):
     for _ in range(nrun):
         # (2) create model
@@ -25,9 +26,7 @@ for idx in range(np.size(array_ndim)):
         ndim = array_ndim[idx]
         model.fit(X[:,0:ndim])
         array_time[idx] += model.time_fit
-        #print("Number Neighbours: {}".format(model.nneighbours))
     print("Dimension: {}  Time Fit: {}".format(ndim,array_time[idx]))
-
 # determine power
 log_ndim = np.log(array_ndim)
 log_time = np.log(array_time)

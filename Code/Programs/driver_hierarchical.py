@@ -1,13 +1,13 @@
 # driver_hierarchical.py
 
-import create_data_cluster_sklearn
+import create_dataset_sklearn
 import hierarchical
 import matplotlib.pyplot as plt
 
 # (1) generate data
 nsample = 200
 case = "varied_blobs1"
-X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
+X = create_dataset_sklearn.create_dataset(nsample,case)
 # (2) create model - instance of hierarchical class object
 model = hierarchical.hierarchical()
 # (3) perform clustering

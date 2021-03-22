@@ -1,4 +1,4 @@
-# create_data_cluster_sklearn.py
+# create_dataset_sklearn.py
 
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -7,7 +7,7 @@ from sklearn import datasets
 from sklearn.preprocessing import StandardScaler
 
 # Datasets from sklearn - see also UnsupervisedML/Examples/Section02/sklearnDatasets.ipynb
-def create_data_cluster(n_samples,case):
+def create_dataset(n_samples,case):
 	if case == "aniso":
 		X, y = datasets.make_blobs(n_samples=n_samples, random_state=170)
 		transformation = [[0.6, -0.6], [-0.4, 0.8]]
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     for row in range(nrow):
 	    for col in range(ncol):
 		    case = list_dataset[row][col]
-		    X = create_data_cluster(nsample,case)
+		    X = create_dataset(nsample,case)
 		    axs[row,col].scatter(X[0,:],X[1,:],color = cm.jet(0), s=15)
 		    axs[row,col].set_title(case)
     plt.show()

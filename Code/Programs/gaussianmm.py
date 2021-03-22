@@ -40,8 +40,8 @@ class gaussianmm(clustering_base.clustering_base):
         self.weightsave = [[1/self.ncluster for _ in range(self.ncluster)]]
         # initialize covariance matrices as same for all gaussians
         Xmm = self.X - np.mean(self.X,axis=1,keepdims=True)
-        Sigma = np.dot(Xmm,Xmm.T)/self.nsample
-        self.Sigmasave = [[Sigma for _ in range(self.ncluster)]]
+        Cov = np.dot(Xmm,Xmm.T)/self.nsample
+        self.Covsave = [[Cov for _ in range(self.ncluster)]]
 
     def fit(self,X,max_iter,tolerance=1e-5,verbose=True):
         time_start = time.time()
@@ -71,7 +71,7 @@ class gaussianmm(clustering_base.clustering_base):
         # expectation step - update conditional probabilities
         weighted_normal = np.zeros((self.ncluster,self.nsample))
         for k in range(self.ncluster):
-            weighted_normal[k,:] = self.weightsave[-1][k]*normal.normal_pdf_vectorized(self.X,self.meansave[-1][k],self.Sigmasave[-1][k])
+            weighted_normal[k,:] = self.weightsave[-1][k]*normal.normal_pdf_vectorized(self.X,self.meansave[-1][k],self.Covsave[-1][k])
         self.gamma = weighted_normal/np.sum(weighted_normal,axis=0,keepdims=True)
         # compute log likelihood and append to objectivesave
         self.objectivesave.append(np.sum(np.log(np.sum(weighted_normal,axis=0))))
@@ -79,19 +79,19 @@ class gaussianmm(clustering_base.clustering_base):
     def maximization(self):
         # compute number of points in each cluster
         self.M = np.sum(self.gamma,axis=1)
-        # compute mean, Sigma, and weight for each cluster
+        # compute mean, Cov, and weight for each cluster
         list_mean = []
-        list_Sigma = []
+        list_Cov = []
         list_weight = []
         for k in range(self.ncluster):
             mean = np.sum(self.X*self.gamma[k,:],axis=1,keepdims=True)/self.M[k]
             list_mean.append(mean)
             list_weight.append(self.M[k]/self.nsample)
             Xmm = self.X - mean
-            list_Sigma.append(np.matmul(self.gamma[k,:]*Xmm,Xmm.T)/self.M[k])
+            list_Cov.append(np.matmul(self.gamma[k,:]*Xmm,Xmm.T)/self.M[k])
         self.meansave.append(list_mean)
         self.weightsave.append(list_weight)
-        self.Sigmasave.append(list_Sigma)
+        self.Covsave.append(list_Cov)
 
     def compute_distance2(self,list_mean):
         # dist2[i,j] = distance squared between mean i and point j 
@@ -115,6 +115,7 @@ class gaussianmm(clustering_base.clustering_base):
     def plot_cluster(self,nlevel,title="",xlabel="",ylabel=""):
         # plot final clusters and means
         fig,ax = plt.subplots(1,1)
+        ax.set_aspect("equal")
         ax.set_title(title)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
@@ -122,12 +123,13 @@ class gaussianmm(clustering_base.clustering_base):
         scatter_data = ax.scatter(self.X[0,:],self.X[1,:], color=cm.jet(array_color_data), marker="o", s=15)
         # plot contours of weighted normal distribution for each cluster
         for cluster in range(self.ncluster):
-            mean, width, height, angle = normal.create_ellipse_patch_details(self.meansave[nlevel][cluster],self.Sigmasave[nlevel][cluster],self.weightsave[nlevel][cluster])
+            mean, width, height, angle = normal.create_ellipse_patch_details(self.meansave[nlevel][cluster],self.Covsave[nlevel][cluster],self.weightsave[nlevel][cluster])
             ell = Ellipse(xy=mean, width=width, height=height, angle=angle, color=cm.jet((cluster+1)/self.ncluster), alpha=0.5)
             ax.add_patch(ell)
 
     def plot_cluster_animation(self,nlevel=-1,interval=500,title="",xlabel="",ylabel=""):
         fig,ax = plt.subplots(1,1)
+        ax.set_aspect("equal")
         ax.set_title(title)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
@@ -164,7 +166,7 @@ class gaussianmm(clustering_base.clustering_base):
             return list_object
 
         ani = animation.FuncAnimation(fig=fig, func=update, frames = nframe,
-            fargs=[list_object,self.clustersave,self.meansave,self.Sigmasave,self.weightsave],
+            fargs=[list_object,self.clustersave,self.meansave,self.Covsave,self.weightsave],
             repeat_delay=0, repeat=True, interval=interval, blit=True)
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get detaisl

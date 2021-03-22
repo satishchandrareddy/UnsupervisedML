@@ -1,7 +1,8 @@
-# Exercise4.3.1.py
+# Exercise_4.3.1.py
 # Complexity for hierarchical clustering
+# Run in folder UnsupervisedML/Code/Programs
 
-import create_data_cluster_sklearn
+import create_dataset_sklearn
 import hierarchical
 import matplotlib.pyplot as plt
 import numpy as np
@@ -9,7 +10,7 @@ import numpy as np
 # (1) generate data
 nsample = 200
 case = "varied_blobs1"
-X = create_data_cluster_sklearn.create_data_cluster(nsample,case)
+X = create_dataset_sklearn.create_dataset(nsample,case)
 array_ndim = np.array([10, 20, 50, 100, 200])
 array_time = np.zeros((np.size(array_ndim)))
 

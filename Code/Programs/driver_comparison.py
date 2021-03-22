@@ -1,6 +1,6 @@
 # driver_comparison.py
 
-import create_data_cluster_sklearn
+import create_dataset_sklearn
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
@@ -14,7 +14,7 @@ nsample = 1500
 # uncomment one of the following lines
 #list_dataset = ["blobs", "varied_blobs1", "varied_blobs2"]
 list_dataset = ["noisy_circles", "noisy_moons", "aniso"]
-X = {case : create_data_cluster_sklearn.create_data_cluster(nsample, case) for case in list_dataset}
+X = {case : create_dataset_sklearn.create_dataset(nsample, case) for case in list_dataset}
 
 # models:
 models = ["K Means", "GaussianMM", "DBSCAN"]

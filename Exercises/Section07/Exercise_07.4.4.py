@@ -1,7 +1,9 @@
-# driver_gaussianmm.py
+# Exercise_07.4.4.py
+# Driver for spherical variation of the Gaussian Mixture Model
+# Run in folder UnsupervisedML/Code/Programs
 
 import create_dataset_sklearn
-import gaussianmm
+import gaussianmm_spherical
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -14,8 +16,8 @@ X = create_dataset_sklearn.create_dataset(nsample,case)
 # initialization should be "random" or "kmeans++"
 np.random.seed(31)
 ncluster = 3
-initialization = "random"
-model = gaussianmm.gaussianmm(ncluster,initialization)
+initialization = "kmeans++"
+model = gaussianmm_spherical.gaussianmm(ncluster,initialization)
 # (3) fit model
 max_iter = 30
 tolerance = 1e-5
