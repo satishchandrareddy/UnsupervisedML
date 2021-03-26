@@ -22,11 +22,12 @@ tolerance = 1e-5
 model.fit(X,max_iter,tolerance)
 print("Time fit: {}".format(model.time_fit))
 # (4) plot results
+nlevel = -1
 model.plot_objective(title="K Means Clustering Dataset: " +case, xlabel="Iteration", ylabel="Objective")
 # plot initial data with initial means
 model.plot_cluster(0,title="Initial Means & Datset: "+case, xlabel="Feature x0", ylabel="Feature x1")
 # plot final clusters
-model.plot_cluster(-1,title="K Means Clustering Dataset: "+case,
+model.plot_cluster(nlevel=nlevel,title="K Means Clustering Dataset: "+case,
 	xlabel="Feature x0", ylabel="Feature x1")
 # animation
 model.plot_cluster_animation(nlevel=-1,interval=800,title="K Means Clustering Dataset: "+case,

@@ -23,7 +23,7 @@ class hierarchical(clustering_base.clustering_base):
         self.X = X
         self.nsample = X.shape[1]
         self.initialize_algorithm()
-        # loop over levels and combine nearest clusters
+        # loop over levels and combine closest clusters
         for level in range(self.nsample-1):
             self.combine_closest_clusters()
         self.time_fit = time.time() - time_start
