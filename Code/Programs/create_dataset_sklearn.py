@@ -6,7 +6,7 @@ import numpy as np
 from sklearn import datasets
 from sklearn.preprocessing import StandardScaler
 
-# Datasets from sklearn - see also UnsupervisedML/Examples/Section02/sklearnDatasets.ipynb
+# Datasets from sklearn - see also UnsupervisedML/Examples/Section02/SklearnDatasets.ipynb
 def create_dataset(n_samples,case):
 	if case == "aniso":
 		X, y = datasets.make_blobs(n_samples=n_samples, random_state=170)

@@ -16,8 +16,9 @@ class clustering_base:
         pass
 
     def get_index(self,nlevel,cluster_number):
-        # cluster_number (integer) = cluster number
-        # return indices of samples in clustersave[nlevel] = cluster_number
+        # nlevel (integer)
+        # cluster_number (integer)
+        # return indices of samples where clustersave[nlevel] = cluster_number
         return np.where(np.absolute(self.clustersave[nlevel]-cluster_number)<1e-5)[0]
 
     def plot_objective(self,title="",xlabel="",ylabel=""):
