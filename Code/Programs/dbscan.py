@@ -8,16 +8,16 @@ import time
 class dbscan(clustering_base.clustering_base):
     def __init__(self,minpts,epsilon,animation=True):
         self.minpts = minpts
-        self.epsilon = epsilon
         self.epsilon2 = epsilon**2
         self.animation = animation
 
     def initialize_algorithm(self):
-        # initialize cluster information
         self.objectivesave = []
+        # initialize cluste information
         self.list_label = ["unvisited" for _ in range(self.nsample)]
         self.clustersave = [(-1)*np.ones((self.nsample))]
         if not self.animation:
+            # create self.clustersave[1] for final cluster assignment in case of no animation
             self.clustersave.append(deepcopy(self.clustersave[0]))
 
     def fit(self,X):
@@ -59,6 +59,7 @@ class dbscan(clustering_base.clustering_base):
         in_cluster = [False for _ in range(self.nsample)]
         list_cluster,in_cluster = self.add_points(list_cluster,in_cluster,list_neighbour)
         while len(list_cluster)> 0:
+            # check 0th point and then pop (remove)
             idx_check = list_cluster[0]
             list_cluster.pop(0)
             if self.list_label[idx_check] == "noise":
@@ -88,8 +89,8 @@ class dbscan(clustering_base.clustering_base):
     def update_cluster_assignment(self,cluster_number,idx):
         # update clustersave with new cluster assignment
         if self.animation:
-            list_cluster = deepcopy(self.clustersave[-1])
-            list_cluster[idx] = cluster_number
-            self.clustersave.append(list_cluster)
+            current_clustersave = deepcopy(self.clustersave[-1])
+            current_clustersave[idx] = cluster_number
+            self.clustersave.append(current_clustersave)
         else:
             self.clustersave[-1][idx] = cluster_number
