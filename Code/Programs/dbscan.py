@@ -13,7 +13,7 @@ class dbscan(clustering_base.clustering_base):
 
     def initialize_algorithm(self):
         self.objectivesave = []
-        # initialize cluste information
+        # initialize cluster information
         self.list_label = ["unvisited" for _ in range(self.nsample)]
         self.clustersave = [(-1)*np.ones((self.nsample))]
         if not self.animation:
