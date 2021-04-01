@@ -1,7 +1,6 @@
 # kmeans.py
 
 import clustering_base
-from copy import deepcopy
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -77,15 +76,18 @@ class kmeans(clustering_base.clustering_base):
         self.objectivesave.append(np.sum(np.min(dist2,axis=0)))
 
     def update_mean(self):
-        # update means based on latest cluster assignments
-        list_mean = deepcopy(self.meansave[-1])
-        for count in range(self.ncluster):
+        # computed new means based on latest cluster assignments
+        list_mean = []
+        # loop over all cluster_label = 0,...,self.ncluster-1
+        for cluster_label in range(self.ncluster):
             # for each cluster find indices of points assigned to the cluster
-            idx = np.where(np.absolute(self.clustersave[-1]-count)<1e-7)[0]
-            # update mean if there are points assigned to cluster
+            idx = self.get_index(nlevel=-1,cluster_number=cluster_label)
+            # update mean if there are points assigned to cluster otherwise keep existing cluster mean
             if np.size(idx)>0:
-                list_mean[count] = np.mean(self.X[:,idx],axis=1,keepdims=True)
-        self.meansave.append(deepcopy(list_mean))
+                list_mean.append(np.mean(self.X[:,idx],axis=1,keepdims=True))
+            else:
+                list_mean.append(self.meansave[-1][cluster_label])
+        self.meansave.append(list_mean)
 
     def compute_diff_mean(self):
         # determine maximum distance between current and previous means

@@ -142,7 +142,8 @@ class gaussianmm(clustering_base.clustering_base):
         # list_object contains ellipse patches and scatter plot for data
         list_object = []
         for cluster in range(self.ncluster):
-            ell = Ellipse(xy=np.array([0,0]), width=1, height=1, angle=0, color=cm.jet((cluster+1)/self.ncluster), alpha=0.4, visible=False)
+            ell = Ellipse(xy=np.array([0,0]), width=1, height=1, angle=0, 
+                color=cm.jet((cluster+1)/self.ncluster), alpha=0.4, visible=False)
             list_object.append(ell)
             ax.add_patch(ell)
         # insert scatter plot of data points as initial entry in list
@@ -162,7 +163,7 @@ class gaussianmm(clustering_base.clustering_base):
                 list_object[cluster+1].angle = angle
                 list_object[cluster+1].set_visible(True)
             # update color of data points based on cluster assignments
-            list_object[0].set_color(cm.jet((np.squeeze(clustersave[i])+1)/(nellipse)))
+            list_object[0].set_color(cm.jet((clustersave[i]+1)/(nellipse)))
             return list_object
 
         ani = animation.FuncAnimation(fig=fig, func=update, frames = nframe,
