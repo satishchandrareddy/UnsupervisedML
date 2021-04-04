@@ -1,7 +1,6 @@
 # gaussianmm.py
 
 import clustering_base
-from copy import deepcopy
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
@@ -40,7 +39,7 @@ class gaussianmm(clustering_base.clustering_base):
         self.weightsave = [[1/self.ncluster for _ in range(self.ncluster)]]
         # initialize covariance matrices as same for all gaussians
         Xmm = self.X - np.mean(self.X,axis=1,keepdims=True)
-        Cov = np.dot(Xmm,Xmm.T)/self.nsample
+        Cov = np.matmul(Xmm,Xmm.T)/self.nsample
         self.Covsave = [[Cov for _ in range(self.ncluster)]]
 
     def fit(self,X,max_iter,tolerance=1e-5,verbose=True):
@@ -102,7 +101,7 @@ class gaussianmm(clustering_base.clustering_base):
         return dist2
 
     def update_cluster_assignment(self):
-        # determine cluster index for each point in data set for current iteration
+        # determine cluster assignment = index of maximum value of gamma for the data point
         self.clustersave.append(np.argmax(self.gamma,axis=0))
 
     def compute_diff(self):

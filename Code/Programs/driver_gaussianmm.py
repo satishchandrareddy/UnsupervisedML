@@ -23,11 +23,9 @@ model.fit(X,max_iter,tolerance)
 print("Fitting time: {}".format(model.time_fit))
 # (4) plot results
 nlevel=-1
-# plot loglikelihood
 model.plot_objective(title="Gaussian Mixture Model",xlabel="Iteration",ylabel="Log Likelihood")
 # plot dataset with initial normal distribution patches
-model.plot_cluster(nlevel=0,title="Initial Gaussians & Dataset: "+case,
-	xlabel="Feature x0", ylabel="Feature x1")
+model.plot_cluster(nlevel=0,title="Initial Gaussians & Dataset: "+case,xlabel="Feature x0", ylabel="Feature x1")
 # plot final cluster assignments and distribution pataches
 model.plot_cluster(nlevel=nlevel,title="Gaussian Mixture Model Dataset: "+case,
 	xlabel="Feature x0", ylabel="Feature x1")

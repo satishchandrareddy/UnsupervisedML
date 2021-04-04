@@ -24,7 +24,9 @@ def normal_pdf_vectorized(X,mu,Cov):
 	# Cov is 2d np.array of shape d,d - covariance matrix
     detCov = np.linalg.det(Cov)
     invCov = np.linalg.inv(Cov)
+    # compute inverse Cov * (X - mu) for all data points
     arg_exp = np.matmul(invCov,(X - mu))
+    # compute -0.5* (X-mu)^T * [inverse Cov * (X-mu)] for all data points 
     arg_exp = -0.5*np.sum((X - mu)*arg_exp,axis=0,keepdims=True)
     # output is dimension (1, m data points)
     return np.exp(arg_exp)/np.sqrt(np.power(2*np.pi,X.shape[0])*detCov)
@@ -33,8 +35,8 @@ def create_ellipse_patch_details(mu,Cov,weight,contour=2e-3):
 	# compute ellipse patch in 2d to show contour where normal pdf <= contour
 	# mu (mean) is np.array of shape (2,) or np.array of shape (2,1)
 	# Cov (covariance matrix) is np.array of shape (2,2)
-	# weight (weight) is a real number
-	# contour is a number
+	# weight (weight) is a float (real number)
+	# contour is a float (real number)
 	detCov = np.linalg.det(Cov)
 	alpha = np.sqrt(-2*np.log(contour*2*np.pi*np.sqrt(detCov)/weight))
 	U,Sigma,_ = np.linalg.svd(Cov)
