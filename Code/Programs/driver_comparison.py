@@ -12,8 +12,8 @@ import metrics
 # generate datasets
 nsample = 1500
 # uncomment one of the following lines
-#list_dataset = ["blobs", "varied_blobs1", "varied_blobs2"]
-list_dataset = ["noisy_circles", "noisy_moons", "aniso"]
+list_dataset = ["blobs", "varied_blobs1", "varied_blobs2"]
+#list_dataset = ["noisy_circles", "noisy_moons", "aniso"]
 X = {case : create_dataset_sklearn.create_dataset(nsample, case) for case in list_dataset}
 
 # models:
