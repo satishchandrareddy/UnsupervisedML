@@ -70,13 +70,13 @@ for i,dataset in enumerate(list_dataset):
     	    elif model == "DBSCAN":
     		    mod = dbscan.dbscan(minpts=5, epsilon=0.18)
         # fit model
-        print("Dataset: {}".format(dataset))
+        print("Model: {}".format(model))
         if model == "DBSCAN":
     	    mod.fit(X[dataset])
         else:
     	    mod.fit(X[dataset],100,1e-5,False)
         print("Time fit: {}".format(mod.time_fit))
-        # davies-bouldin 
+        # davies-bouldin and silhouette
         db = metrics.davies_bouldin(X[dataset],mod.clustersave[-1])
         s = metrics.silhouette(X[dataset],mod.clustersave[-1])
         print("Davies-Bouldin: {}".format(db))

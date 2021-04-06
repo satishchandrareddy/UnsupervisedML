@@ -7,16 +7,16 @@ from pathlib import Path
 
 class mnist:
     def __init__(self):
+    	# store grandparent directory
         self.root_dir = Path(__file__).resolve().parent.parent
 
     def load_valid(self,nsample):
-    	# load mnist valid dataset
-    	# create feature matrix with nsample data points 
-	    # read data test
+    	# load mnist valid dataset with nsample samples 
+	    # load data into dataframe
 	    df = pd.read_csv(self.root_dir / "Data_MNIST/MNIST_valid_10K.csv")
-	    # get labels and 
+	    # get labels
 	    class_label = df["label"]
-	    # remove label column
+	    # remove label column from dataframe
 	    df = df.drop(columns="label")
 	    # create feature matrix from remaining data - divide by 255 and take transpose
 	    X = df.values.T/255
@@ -27,20 +27,19 @@ class mnist:
 	    return X,class_label
 
     def load_train(self,nsample):
-    	# load mnist data
-    	# create feature matrix with nsample data points 
-	    # read data from train files
+    	# load train datase with nsample samples 
+	    # load data from the 2 files into dataframes
 	    df1 = pd.read_csv(self.root_dir / "Data_MNIST/MNIST_train_set1_30K.csv")
 	    df2 = pd.read_csv(self.root_dir / "Data_MNIST/MNIST_train_set2_30K.csv")
-	    # get labels and concatenate
+	    # get labels and concatenate results from 2 dataframes
 	    class_label1 = df1["label"].values
 	    class_label2 = df2["label"].values
 	    class_label = np.concatenate((class_label1,class_label2))
-	    # remove label column
+	    # remove label column from dataframe
 	    df1 = df1.drop(columns="label")
 	    df2 = df2.drop(columns="label")
 	    # create feature matrix from remaining data - divide by 255
-	    # concatenate and take transpose
+	    # concatenate results from 2 dataframes and take transpose
 	    X1 = df1.values/255
 	    X2 = df2.values/255
 	    X = np.concatenate((X1,X2),axis=0).T

@@ -25,6 +25,5 @@ model.plot_cumulative_variance_proportion()
 variance_capture = 0.90
 Xr = model.data_reconstructed(variance_capture=variance_capture)
 # plot reconstructed data using same seed
-seed = 11
 mnist.plot_image(Xr,seed)
 plt.show()
