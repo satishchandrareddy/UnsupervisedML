@@ -10,7 +10,7 @@ class pca:
     def fit(self,X):
         # compute compact SVD of X - Xmean
         self.dimension,self.nsample = X.shape
-        print("Number of dimensions, data points: {}".format(self.dimension,self.nsample))
+        print("Number of dimensions: {}  data points: {}".format(self.dimension,self.nsample))
         self.Xmean = np.mean(X,axis=1,keepdims=True)
         self.U,self.Sigma,self.Vt = np.linalg.svd(X-self.Xmean,full_matrices=False)
         cumulative_variance = np.cumsum(np.square(self.Sigma))/self.nsample
@@ -26,7 +26,7 @@ class pca:
         # *kwargs input one of 
         # reduced_dim (integer) reduced dimension
         # variance_capture (float) is amount of variance to be captured 0<variance_capture<=1
-        # return coordinates of X-Xmean in reduced u(0),...,u(K-1) coordinate system
+        # return reduced dimension version of X-Xmean in u(0),...,u(K-1) coordinate system
         K = self.dimension
         if "reduced_dim" in kwargs:
             K = kwargs["reduced_dim"]
@@ -71,6 +71,7 @@ if __name__ == "__main__":
     print("R: \n{}".format(Ra))
     Xa = model.data_reconstructed(reduced_dim=2)
     print("XR Reconstructed: \n{}".format(Xa))
+    print("---------------------------------------------------------------------------")
     #(4) compute dataset capturing 80% of variance
     Rb = model.data_reduced_dimension(variance_capture=0.80)
     print("R: \n{}".format(Rb))

@@ -99,15 +99,17 @@ def purity(cluster_assignment,class_assignment):
 
 def plot_cluster_distribution(cluster_assignment, class_assignment, figsize=(8,4), figrow=1):
     rcParams.update({'figure.autolayout': True})
-    # adjust cluster labels (in case label is -1):
     nsample = np.size(cluster_assignment)
     # determine number of labels
     ncluster = np.size(np.unique(cluster_assignment))
     print("Number of Clusters: {}".format(ncluster))
+    # create dataframe
     df = pd.DataFrame({'clusterlabel': cluster_assignment,
                         'classlabel': class_assignment,
-                        'cluster': np.ones(len(class_assignment))})
+                        'cluster': np.ones(np.size(class_assignment))})
+    # sum overt clusterlabel and classlabel
     counts = df.groupby(['clusterlabel', 'classlabel']).sum()
+    # create bar charts in figrow rows
     fig = counts.unstack(level=0).plot(kind='bar', subplots=True,
                                         sharey=True, sharex=False,
                                         layout=(figrow,int(ncluster/figrow)), 
