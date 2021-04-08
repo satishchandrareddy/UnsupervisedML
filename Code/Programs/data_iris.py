@@ -15,9 +15,9 @@ class iris:
         iris_df = pd.read_csv(self.root_dir / "Data_Iris/iris.csv")
         # extract labels
         class_label = iris_df["species"].values
-        # extract features
-        self.list_feature = ["sepal_length", "sepal_width", "petal_length", "petal_width"]
-        X = iris_df[self.list_feature].values.T
+        # save column headings and extract feature information
+        self.feature = ["sepal_length","sepal_width","petal_length","petal_width"]
+        X = iris_df[self.feature].values.T
         print("Number of dimensions: {} Number of data points: {}".format(X.shape[0],X.shape[1]))
         print("Number of class labels: {}".format(X.shape))
         return X, class_label
@@ -28,7 +28,9 @@ class iris:
         list_class_label = np.unique(class_label)
         nclass = len(list_class_label)
         # permutation of indices
-        list_permutation = [[[0,1,2,3], [0,2,3,1], [0,3,1,2]],[[1,2,3,0], [1,3,0,2], [2,3,0,1]]]
+        # 0 = sepal_length, 1 = sepal_width, 2 = petal_length, 3 = petal_width
+        list_permutation = [[[0,1], [0,2], [0,3]],
+                            [[1,2], [1,3], [2,3]]]
         # generate figure showing data for all possible combinations of 2 features
         nrow = 2
         ncol = 3
@@ -43,8 +45,8 @@ class iris:
                         X[list_permutation[row][col][0],idx],
                         X[list_permutation[row][col][1],idx],
                         color = cm.hsv((i+1)/nclass), s=15, label=classname)		    
-                    axs[row,col].set_xlabel(self.list_feature[list_permutation[row][col][0]])
-                    axs[row,col].set_ylabel(self.list_feature[list_permutation[row][col][1]])
+                    axs[row,col].set_xlabel(self.feature[list_permutation[row][col][0]])
+                    axs[row,col].set_ylabel(self.feature[list_permutation[row][col][1]])
                     axs[row,col].legend(loc="upper left")
 
 if __name__ == "__main__":

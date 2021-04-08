@@ -17,5 +17,6 @@ print("Time fit: {}".format(model.time_fit))
 level = -3
 print("Purity: {}".format(metrics.purity(model.clustersave[level],class_label)))
 print("Davies-Bouldin: {}".format(metrics.davies_bouldin(X,model.clustersave[level])))
+print("Silhouette: {}".format(metrics.silhouette(X,model.clustersave[level])))
 metrics.plot_cluster_distribution(model.clustersave[level],class_label)
 plt.show()

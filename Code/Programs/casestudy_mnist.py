@@ -37,10 +37,10 @@ print("Time fit: {}".format(model.time_fit))
 # (4) results
 level = -1
 print("Purity: {}".format(metrics.purity(model.clustersave[level],class_label)))
-print("Davies-Bouldin: {}".format(metrics.davies_bouldin(X,model.clustersave[level])))
-# plot images from clusters 1,4,5,6
+print("Davies-Bouldin: {}".format(metrics.davies_bouldin(R,model.clustersave[level])))
+# plot images from clusters 3,4,5,6
 seed = 31
-mnist.plot_image(X[:,model.get_index(level,1)],seed)
+mnist.plot_image(X[:,model.get_index(level,3)],seed)
 mnist.plot_image(X[:,model.get_index(level,4)],seed)
 mnist.plot_image(X[:,model.get_index(level,5)],seed)
 mnist.plot_image(X[:,model.get_index(level,6)],seed)
