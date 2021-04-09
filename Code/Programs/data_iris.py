@@ -19,7 +19,7 @@ class iris:
         self.feature = ["sepal_length","sepal_width","petal_length","petal_width"]
         X = iris_df[self.feature].values.T
         print("Number of dimensions: {} Number of data points: {}".format(X.shape[0],X.shape[1]))
-        print("Number of class labels: {}".format(X.shape))
+        print("Number of class labels: {}".format(class_label.shape))
         return X, class_label
 
     def plot(self,X,class_label):

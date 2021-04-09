@@ -16,13 +16,14 @@ text = data_bbctext.bbctext()
 X,class_label = text.load(nsample)
 # pca
 R = X
-use_pca = False
+use_pca = True
 if use_pca:
     time_pca_start = time.time()
     variance_capture = 1.00
     model_pca = pca.pca()
     model_pca.fit(X)
     R = model_pca.data_reduced_dimension(variance_capture=variance_capture)
+    model_pca.plot_cumulative_variance_proportion()
     print("Time pca: {}".format(time.time() - time_pca_start))
 # (2) create model
 # initialization should be "random" or "kmeans++"
@@ -41,5 +42,5 @@ print("Purity: {}".format(metrics.purity(model.clustersave[level],class_label)))
 print("Davies-Bouldin: {}".format(metrics.davies_bouldin(R,model.clustersave[level])))
 model.plot_objective(title="K Means",xlabel="Iteration",ylabel="Objective")
 metrics.plot_cluster_distribution(model.clustersave[level],class_label,figsize=(8,4))
-text.create_wordcloud(X,model.clustersave[level],ncluster)
+text.create_wordcloud(X,model.clustersave[level])
 plt.show()

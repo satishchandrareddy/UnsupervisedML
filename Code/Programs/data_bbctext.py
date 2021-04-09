@@ -27,15 +27,16 @@ class bbctext:
         print("X.shape: {} - labels.shape: {}".format(X_tfidf.shape, class_label.shape))
         return X_tfidf, class_label
 
-    def create_wordcloud(self,X_tfidf,cluster_assignment,ncluster,nword=50):
+    def create_wordcloud(self,X_tfidf,cluster_assignment,nword=50):
         nrow = 2
         ncol = 3
+        ncluster = np.size(np.unique(cluster_assignment))
         fig, ax = plt.subplots(nrow,ncol,figsize=(8,5.5))
         ax[1,2].axis("off")
         for cluster in range(ncluster):
             row = int(cluster/ncol)
             col = cluster % ncol
-            # find indices of articles (data ponts) for cluster
+            # find indices of articles (data points) for cluster
             idx = np.where(np.absolute(cluster_assignment-cluster)<1e-5)[0]
             # sum X_tfidf matrix over articles in cluster to get "influence" for each word
             influence = np.sum(X_tfidf[:,idx],axis=1)
@@ -43,8 +44,9 @@ class bbctext:
             idx_influence_most = np.argsort(-influence)[0:nword]
             word_influence_most = np.array(self.vectorizer.get_feature_names())[idx_influence_most]
             word_dict = {word_influence_most[i]:influence[idx_influence_most[i]] for i in range(nword)}
-            print("Cluster: {}  \nwords: {}".format(cluster,word_influence_most[0:10]))
-            wc = WordCloud(background_color="white",width=1000,height=1000,relative_scaling=0.5).generate_from_frequencies(word_dict)
+            print("Cluster: {}  \nMost influential words: {}".format(cluster,word_influence_most[0:10]))
+            wc = WordCloud(background_color="white",width=1000,height=1000,random_state=11, 
+                relative_scaling=0.5).generate_from_frequencies(word_dict)
             ax[row,col].imshow(wc)
             ax[row,col].axis("off")
             ax[row,col].set_title("Cluster "+str(cluster))

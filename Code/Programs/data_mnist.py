@@ -15,7 +15,7 @@ class mnist:
 	    # load data into dataframe
 	    df = pd.read_csv(self.root_dir / "Data_MNIST/MNIST_valid_10K.csv")
 	    # get labels
-	    class_label = df["label"]
+	    class_label = df["label"].values
 	    # remove label column from dataframe
 	    df = df.drop(columns="label")
 	    # create feature matrix from remaining data - divide by 255 and take transpose
