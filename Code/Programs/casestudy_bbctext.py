@@ -23,7 +23,6 @@ if use_pca:
     model_pca = pca.pca()
     model_pca.fit(X)
     R = model_pca.data_reduced_dimension(variance_capture=variance_capture)
-    model_pca.plot_cumulative_variance_proportion()
     print("Time pca: {}".format(time.time() - time_pca_start))
 # (2) create model
 # initialization should be "random" or "kmeans++"

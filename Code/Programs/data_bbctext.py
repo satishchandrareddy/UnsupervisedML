@@ -30,10 +30,10 @@ class bbctext:
     def create_wordcloud(self,X_tfidf,cluster_assignment,nword=50):
         nrow = 2
         ncol = 3
-        ncluster = np.size(np.unique(cluster_assignment))
+        array_cluster_label = np.unique(cluster_assignment)
         fig, ax = plt.subplots(nrow,ncol,figsize=(8,5.5))
         ax[1,2].axis("off")
-        for cluster in range(ncluster):
+        for cluster in array_cluster_label:
             row = int(cluster/ncol)
             col = cluster % ncol
             # find indices of articles (data points) for cluster
