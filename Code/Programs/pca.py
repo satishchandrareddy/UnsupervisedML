@@ -13,7 +13,7 @@ class pca:
         print("Number of dimensions: {}  data points: {}".format(self.dimension,self.nsample))
         self.Xmean = np.mean(X,axis=1,keepdims=True)
         self.U,self.Sigma,self.Vt = np.linalg.svd(X-self.Xmean,full_matrices=False)
-        cumulative_variance = np.cumsum(np.square(self.Sigma))/self.nsample
+        cumulative_variance = np.cumsum(np.square(self.Sigma))/(self.nsample-1)
         self.cumulative_variance_proportion = cumulative_variance/cumulative_variance[-1]
     
     def get_dimension(self,variance_capture):
