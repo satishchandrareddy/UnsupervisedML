@@ -51,9 +51,10 @@ class pca:
     def plot_cumulative_variance_proportion(self):
         # plot cumulative_variance_proportion
         plt.figure()
-        plt.plot(self.cumulative_variance_proportion)
+        principal_components = np.arange(1,np.size(self.cumulative_variance_proportion)+1)
+        plt.plot(principal_components,self.cumulative_variance_proportion)
         plt.title("Cumulative Variance Proportion")
-        plt.xlabel("Singular Value")
+        plt.xlabel("Principal Components")
         plt.ylabel("Proportion")
 
 if __name__ == "__main__":
