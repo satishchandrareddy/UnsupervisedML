@@ -11,6 +11,7 @@ from wordcloud import WordCloud
 class bbctext:
 
     def __init__(self):
+        # store grandparent directory
         self.root_dir = Path(__file__).resolve().parent.parent
     	# stop_word="english" removes common english words "the", "to", "as", ...
     	# set limits on doc frequency

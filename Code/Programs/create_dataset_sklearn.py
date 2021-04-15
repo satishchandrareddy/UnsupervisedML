@@ -34,11 +34,11 @@ if __name__ == "__main__":
     nsample = 1500
     nrow = 2
     ncol = 3
-    fig, axs = plt.subplots(nrow,ncol)
+    fig, ax = plt.subplots(nrow,ncol)
     for row in range(nrow):
 	    for col in range(ncol):
 		    case = list_dataset[row][col]
 		    X = create_dataset(nsample,case)
-		    axs[row,col].scatter(X[0,:],X[1,:],color = cm.jet(0), s=15)
-		    axs[row,col].set_title(case)
+		    ax[row,col].scatter(X[0,:],X[1,:],color = cm.jet(0), s=15)
+		    ax[row,col].set_title(case)
     plt.show()

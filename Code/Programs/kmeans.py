@@ -106,8 +106,8 @@ class kmeans(clustering_base.clustering_base):
         array_mean = np.concatenate(tuple(self.meansave[nlevel]),axis=1)
         array_color_data = (1+self.clustersave[nlevel])/self.ncluster
         array_color_mean = (1+np.arange(self.ncluster))/self.ncluster
-        scatter_data = plt.scatter(self.X[0,:],self.X[1,:], color=cm.jet(array_color_data), marker="o", s=15)
-        scatter_mean = plt.scatter(array_mean[0,:],array_mean[1,:],color=cm.jet(array_color_mean), marker="s", s=50)
+        scatter_data = ax.scatter(self.X[0,:],self.X[1,:], color=cm.jet(array_color_data), marker="o", s=15)
+        scatter_mean = ax.scatter(array_mean[0,:],array_mean[1,:],color=cm.jet(array_color_mean), marker="s", s=50)
 
     def plot_cluster_animation(self,nlevel=-1,interval=50,title="",xlabel="",ylabel=""):
         # animation of evolutions of means and cluster assignments
@@ -130,7 +130,7 @@ class kmeans(clustering_base.clustering_base):
             array_color_data = (1+self.clustersave[i])/(self.ncluster+1e-16)
             scat_data.set_color(cm.jet(array_color_data))
             array_mean = np.concatenate(tuple(self.meansave[i]),axis=1)
-            scat_mean.set_offsets(array_mean.T)
+            scat_mean.set_offsets(array_mean[0:2,:].T)
             return scat_data,scat_mean
         # create animation
         ani = animation.FuncAnimation(fig=fig, func=update, frames = nframe,
