@@ -31,7 +31,7 @@ class gaussianmm(clustering_base.clustering_base):
         else:
             # pick initial means at random
             # randomly pick ncluster indices from 0,1,2,...,nsample-1 and create list of initial means
-            array_idx = np.random.choice(self.X.shape[1],self.ncluster)
+            array_idx = np.random.choice(self.X.shape[1],self.ncluster,replace=False)
             mean = [self.X[:,[array_idx[count]]] for count in range(self.ncluster)]
         # meansave is list of list of means
         self.meansave = [mean]

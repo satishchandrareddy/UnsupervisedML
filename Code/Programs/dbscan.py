@@ -47,7 +47,7 @@ class dbscan(clustering_base.clustering_base):
         self.time_fit = time.time() - time_start
 
     def neighbours(self,idx):
-        # return list of indices of points within distance^2 = epsilon^2 of point idx
+        # return list of indices of points within distance^2 <= epsilon^2 of point idx
         dist2 = np.sum(np.square(self.X[:,[idx]] - self.X),axis=0)
         return list(np.where(dist2<=self.epsilon2)[0])
 
@@ -87,7 +87,7 @@ class dbscan(clustering_base.clustering_base):
         return list_cluster, in_cluster
 
     def update_cluster_assignment(self,cluster_number,idx):
-        # update clustersave with new cluster assignment
+        # update clustersave with new cluster assignment: point idx in cluster = cluster_number
         if self.animation:
             current_clustersave = deepcopy(self.clustersave[-1])
             current_clustersave[idx] = cluster_number
