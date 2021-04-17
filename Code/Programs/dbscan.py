@@ -53,38 +53,39 @@ class dbscan(clustering_base.clustering_base):
 
     def extend_cluster(self,cluster_number,list_neighbour):
         # create a new cluster with label cluster_number and points (indices) in list_neighbour
-        # list cluster is list of  points (indices) in cluster
-        list_cluster = []
-        # in_cluster tracks if point has been in list_cluster previously
-        in_cluster = [False for _ in range(self.nsample)]
-        list_cluster,in_cluster = self.add_points(list_cluster,in_cluster,list_neighbour)
-        while len(list_cluster)> 0:
+        # list_s is list of  points (indices) in cluster
+        # already_in_s tracks if point has been in list_s previously
+        list_s = []
+        already_in_s = [False for _ in range(self.nsample)]
+        # add neighbours to list_s
+        list_s,already_in_s = self.add_points_to_s(list_s,already_in_s,list_neighbour)
+        while len(list_s)> 0:
             # check 0th point and then pop (remove)
-            idx_check = list_cluster[0]
-            list_cluster.pop(0)
-            if self.list_label[idx_check] == "noise":
-                self.list_label[idx_check] = "border"
-                self.update_cluster_assignment(cluster_number,idx_check)
-            elif self.list_label[idx_check] != "unvisited":
+            idx = list_s[0]
+            list_s.pop(0)
+            if self.list_label[idx] == "noise":
+                self.list_label[idx] = "border"
+                self.update_cluster_assignment(cluster_number,idx)
+            elif self.list_label[idx] != "unvisited":
                 continue
             else:
-                self.update_cluster_assignment(cluster_number,idx_check)
-                new_neighbours = self.neighbours(idx_check)
-                if len(new_neighbours)>= self.minpts:
-                    self.list_label[idx_check] = "core"
-                    list_cluster,in_cluster = self.add_points(list_cluster,in_cluster,new_neighbours)
+                self.update_cluster_assignment(cluster_number,idx)
+                list_new_neighbour = self.neighbours(idx)
+                if len(list_new_neighbour) < self.minpts:
+                    self.list_label[idx] = "border"
                 else:
-                    self.list_label[idx_check] = "border"
-    
-    def add_points(self,list_cluster,in_cluster,list_idx):
-        # add points from list_idx to list_cluster and return updated list_cluster
-        for idx in list_idx:
-            # add point only if not visited or noise and not previously in list_cluster
-            if (self.list_label[idx] == "unvisited" or self.list_label[idx] == "noise") and (not in_cluster[idx]):
-                # add point to cluster and update in_cluster
-                list_cluster.append(idx)
-                in_cluster[idx] = True
-        return list_cluster, in_cluster
+                    self.list_label[idx] = "core"
+                    list_s,already_in_s = self.add_points_to_s(list_s,already_in_s,list_new_neighbour)
+     
+    def add_points_to_s(self,list_s,already_in_s,list_neighbour):
+        # add points from list_neighbour to list_s and return updated list_s and already_in_s
+        for idx in list_neighbour:
+            # add point only if not visited or noise and not previously in list_s
+            if (self.list_label[idx]=="unvisited" or self.list_label[idx] == "noise") and (not already_in_s[idx]):
+                # add point to list_s and update already_in_s
+                list_s.append(idx)
+                already_in_s[idx] = True
+        return list_s, already_in_s
 
     def update_cluster_assignment(self,cluster_number,idx):
         # update clustersave with new cluster assignment: point idx in cluster = cluster_number
