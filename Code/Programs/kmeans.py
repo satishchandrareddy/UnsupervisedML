@@ -68,7 +68,7 @@ class kmeans(clustering_base.clustering_base):
         return dist2
 
     def update_cluster_assignment(self,dist2):
-        # update cluster_assisgnment based on distance squared matrix
+        # update cluster_assisgnment = index of minimum of dist2 array for each data point
         self.clustersave.append(np.argmin(dist2,axis=0))
 
     def update_objective(self,dist2):
@@ -102,11 +102,12 @@ class kmeans(clustering_base.clustering_base):
         ax.set_title(title)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
-        # plot each mean and associated data points in same color
-        array_mean = np.concatenate(tuple(self.meansave[nlevel]),axis=1)
+        # scatter object for data points
         array_color_data = (1+self.clustersave[nlevel])/self.ncluster
-        array_color_mean = (1+np.arange(self.ncluster))/self.ncluster
         scatter_data = ax.scatter(self.X[0,:],self.X[1,:], color=cm.jet(array_color_data), marker="o", s=15)
+        # new code: scatter object for means - first convert list of means to array (ndimension x ncluster)
+        array_mean = np.concatenate(tuple(self.meansave[nlevel]),axis=1)
+        array_color_mean = (1+np.arange(self.ncluster))/self.ncluster
         scatter_mean = ax.scatter(array_mean[0,:],array_mean[1,:],color=cm.jet(array_color_mean), marker="s", s=50)
 
     def plot_cluster_animation(self,nlevel=-1,interval=50,title="",xlabel="",ylabel=""):
@@ -120,21 +121,25 @@ class kmeans(clustering_base.clustering_base):
             nframe = nframe + 1 + nlevel
         else:
             nframe = nlevel
-        # create initial scatter objects for means and data
+
+        # scatter object for data points
+        scat_data = ax.scatter(self.X[0,:],self.X[1,:],color=cm.jet(0),marker="o",s=15)
+        # new code: scatter object for means - first convert list of means to array (ndimension x ncluster)
         array_mean = np.concatenate(tuple(self.meansave[0]),axis=1)
         array_color_mean = (1+np.arange(self.ncluster))/self.ncluster
-        scat_data = ax.scatter(self.X[0,:],self.X[1,:],color=cm.jet(0),marker="o",s=15)
         scat_mean = ax.scatter(array_mean[0,:],array_mean[1,:],color=cm.jet(array_color_mean),marker="s",s=50)
         # create update function - update color for data points and locations of means
-        def update(i,scat_data,scat_mean,clustersave,meansave,ncluster):
-            array_color_data = (1+self.clustersave[i])/(self.ncluster+1e-16)
+        def update(frame_number,scat_data,clustersave,ncluster,scat_mean,meansave):
+            # update color of data points based on cluster assignments
+            array_color_data = (1+self.clustersave[frame_number])/(self.ncluster+1e-16)
             scat_data.set_color(cm.jet(array_color_data))
-            array_mean = np.concatenate(tuple(self.meansave[i]),axis=1)
+            # new code for updating location of means use only rows 0 and 1 of array_mean
+            array_mean = np.concatenate(tuple(self.meansave[frame_number]),axis=1)
             scat_mean.set_offsets(array_mean[0:2,:].T)
             return scat_data,scat_mean
         # create animation
         ani = animation.FuncAnimation(fig=fig, func=update, frames = nframe,
-            fargs=[scat_data,scat_mean,self.clustersave,self.meansave,self.ncluster],
+            fargs=[scat_data,self.clustersave,self.ncluster,scat_mean,self.meansave],
             repeat_delay=1000, interval=interval, blit=True)
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get details

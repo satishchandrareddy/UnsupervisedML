@@ -17,7 +17,7 @@ ncluster = 3
 initialization = "random"
 model = gaussianmm.gaussianmm(ncluster,initialization)
 # (3) fit model
-max_iter = 30
+max_iter = 40
 tolerance = 1e-5
 model.fit(X,max_iter,tolerance)
 print("Fitting time: {}".format(model.time_fit))
