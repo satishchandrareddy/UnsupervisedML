@@ -141,8 +141,11 @@ class gaussianmm(clustering_base.clustering_base):
         # list_object contains filled elliptical patch for weighted normal pdf for each cluster
         list_object = []
         for cluster in range(self.ncluster):
-            ell = Ellipse(xy=np.array([0,0]), width=1, height=1, angle=0, 
-                color=cm.jet((cluster+1)/self.ncluster), alpha=0.5, visible=False)
+            # set up ellipse based on initial means, covariance matrices, and weights
+            mean, width, height, angle = normal.create_ellipse_patch_details(self.meansave[0][cluster],
+                self.Covsave[0][cluster],self.weightsave[0][cluster])
+            ell = Ellipse(xy=mean, width=width, height=height, angle=angle, 
+                color=cm.jet((cluster+1)/self.ncluster), alpha=0.5)
             list_object.append(ell)
             ax.add_patch(ell)
         # insert scatter plot of data points as entry 0 in list
