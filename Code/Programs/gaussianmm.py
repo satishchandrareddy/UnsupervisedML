@@ -120,10 +120,12 @@ class gaussianmm(clustering_base.clustering_base):
         ax.set_ylabel(ylabel)
         array_color_data = (1+self.clustersave[nlevel])/self.ncluster
         scatter_data = ax.scatter(self.X[0,:],self.X[1,:], color=cm.jet(array_color_data), marker="o", s=15)
-        # new code: filled elliptical contour of weighted normal pdf for each cluster
+        # new code: elliptical patch of weighted normal pdf for clusters
         for cluster in range(self.ncluster):
-            mean, width, height, angle = normal.create_ellipse_patch_details(self.meansave[nlevel][cluster],self.Covsave[nlevel][cluster],self.weightsave[nlevel][cluster])
-            ell = Ellipse(xy=mean, width=width, height=height, angle=angle, color=cm.jet((cluster+1)/self.ncluster), alpha=0.5)
+            mean, width, height, angle = normal.create_ellipse_patch_details(self.meansave[nlevel][cluster],
+                self.Covsave[nlevel][cluster],self.weightsave[nlevel][cluster])
+            ell = Ellipse(xy=mean, width=width, height=height, angle=angle, 
+                color=cm.jet((cluster+1)/self.ncluster), alpha=0.5)
             ax.add_patch(ell)
 
     def plot_cluster_animation(self,nlevel=-1,interval=500,title="",xlabel="",ylabel=""):
@@ -138,34 +140,31 @@ class gaussianmm(clustering_base.clustering_base):
         else:
             nframe = nlevel
         
-        # list_object contains filled elliptical patch for weighted normal pdf for each cluster
-        list_object = []
+        # list_object contains scatter plot for data and elliptical patch for weighted normal pdf for clusters
+        list_object = [ax.scatter(self.X[0,:], self.X[1,:], color = cm.jet(0), marker="o", s=15)]
         for cluster in range(self.ncluster):
             # set up ellipse based on initial means, covariance matrices, and weights
             mean, width, height, angle = normal.create_ellipse_patch_details(self.meansave[0][cluster],
                 self.Covsave[0][cluster],self.weightsave[0][cluster])
             ell = Ellipse(xy=mean, width=width, height=height, angle=angle, 
                 color=cm.jet((cluster+1)/self.ncluster), alpha=0.5)
-            list_object.append(ell)
             ax.add_patch(ell)
-        # insert scatter plot of data points as entry 0 in list
-        scat = ax.scatter(self.X[0,:], self.X[1,:], color = cm.jet(0), marker="o", s=15)
-        list_object.insert(0,scat)
+            list_object.append(ell)
 
         def update(frame_number,list_object,clustersave,meansave,Covsave,weightsave):
-            # update elliptical patch for each cluster
             nellipse = len(list_object)-1
+            # update color of data points based on cluster assignments
+            list_object[0].set_color(cm.jet((clustersave[frame_number]+1)/(nellipse)))
+            # update elliptical patch details for clusters
             for cluster in range(nellipse):
                 # call function to compute mean, width, height, angle for current frame 
                 mean, width, height, angle = normal.create_ellipse_patch_details(meansave[frame_number][cluster],
                     Covsave[frame_number][cluster],weightsave[frame_number][cluster])
+                # update center, width, height, and angle
                 list_object[cluster+1].set_center(mean)
                 list_object[cluster+1].width = width
                 list_object[cluster+1].height = height
                 list_object[cluster+1].angle = angle
-                list_object[cluster+1].set_visible(True)
-            # update color of data points based on cluster assignments
-            list_object[0].set_color(cm.jet((clustersave[frame_number]+1)/(nellipse)))
             return list_object
 
         ani = animation.FuncAnimation(fig=fig, func=update, frames = nframe,
