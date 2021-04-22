@@ -5,15 +5,15 @@ import numpy as np
 def normal_pdf(X,mu,Cov):
 	# Compute normal probability density function in arbitrary dimensions
 	# X is np.array of shape (d dimensions x m data points) on which pdf is evaluated
-	# mu is np.array of shape d dimension x 1) of the mean
+	# mu is np.array of shape (d dimension x 1) of the mean
 	# Cov is np.array of shape d,d - covariance matrix
-    nfeature,nsample = X.shape
+    ndim,m = X.shape
     detCov = np.linalg.det(Cov)
     invCov = np.linalg.inv(Cov)
-    Z = np.zeros((1,nsample))
-    for count in range(nsample):
+    Z = np.zeros((1,m))
+    for count in range(m):
         prob = np.exp(-0.5*(np.dot((X[:,[count]]-mu).T,np.matmul(invCov,(X[:,[count]]-mu)))))
-        Z[0,count] = prob/np.sqrt(np.power(2*np.pi,nfeature)*detCov)
+        Z[0,count] = prob/np.sqrt(np.power(2*np.pi,ndim)*detCov)
     # Z has dimensions (1, m data points)
     return Z
 
@@ -32,7 +32,7 @@ def normal_pdf_vectorized(X,mu,Cov):
     return np.exp(arg_exp)/np.sqrt(np.power(2*np.pi,X.shape[0])*detCov)
 
 def create_ellipse_patch_details(mu,Cov,weight,contour=2e-3):
-	# compute ellipse patch details in 2 dimensions to show contour where normal pdf <= contour
+	# compute ellipse patch details in 2 dimensions to show contour where pdf >= contour
 	# if data is in dimension d>2, plots are for initial 2 dimensions only
 	# mu (mean) is np.array of shape (d,) or np.array of shape (d,1)
 	# Cov (covariance matrix) is np.array of shape (d,d)

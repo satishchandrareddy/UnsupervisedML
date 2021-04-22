@@ -45,6 +45,9 @@ class dbscan(clustering_base.clustering_base):
             self.extend_cluster(cluster_number,list_neighbour)
         self.ncluster = cluster_number + 1
         self.time_fit = time.time() - time_start
+        # additional code added after video made in case no clusters found
+        if self.ncluster == 0:
+            self.ncluster = 1
 
     def neighbours(self,idx):
         # return list of indices of points within distance^2 <= epsilon^2 of point idx
