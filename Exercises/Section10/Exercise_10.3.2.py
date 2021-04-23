@@ -33,14 +33,14 @@ initialization = "kmeans++"
 ncluster = 10
 model = gaussianmm_spherical.gaussianmm(ncluster,initialization)
 # (3) fit model
-max_iter = 100
+max_iter = 120
 tolerance = 1e-4
 model.fit(R,max_iter,tolerance)
 print("Time fit: {}".format(model.time_fit))
 # (4) results
 level = -1
 print("Purity: {}".format(metrics.purity(model.clustersave[level],class_label)))
-print("Davies-Bouldin: {}".format(metrics.davies_bouldin(X,model.clustersave[level])))
+print("Davies-Bouldin: {}".format(metrics.davies_bouldin(R,model.clustersave[level])))
 # plot images from clusters 1,4,5,6
 seed = 31
 mnist.plot_image(X[:,model.get_index(level,1)],seed)

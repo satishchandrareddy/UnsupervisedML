@@ -28,7 +28,8 @@ print("Time fit: {}".format(model.time_fit))
 # (4) results
 level = -1
 print("Purity: {}".format(metrics.purity(model.clustersave[level],class_label)))
-print("Davies-Bouldin: {}".format(metrics.davies_bouldin(X,model.clustersave[level])))
+print("Davies-Bouldin: {}".format(metrics.davies_bouldin(R,model.clustersave[level])))
+print("Silhouette: {}".format(metrics.silhouette(R,model.clustersave[level])))
 model.plot_cluster(nlevel=level,title="K Means Clustering for Iris Dataset reduced to 2d",xlabel="u0",ylabel="u1")
 metrics.plot_cluster_distribution(model.clustersave[level],class_label)
 plt.show()

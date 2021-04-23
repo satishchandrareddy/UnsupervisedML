@@ -10,7 +10,7 @@ nsample = 200
 case = "varied_blobs1"
 X = create_dataset_sklearn.create_dataset(nsample,case)
 
-# determine minputs nearest neightbour
+# determine minpts nearest neightbour
 minpts = 4
 list_dist = []
 for i in range(nsample):
