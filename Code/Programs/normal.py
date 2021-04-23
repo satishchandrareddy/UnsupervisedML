@@ -32,7 +32,7 @@ def normal_pdf_vectorized(X,mu,Cov):
     return np.exp(arg_exp)/np.sqrt(np.power(2*np.pi,X.shape[0])*detCov)
 
 def create_ellipse_patch_details(mu,Cov,weight,contour=2e-3):
-	# compute ellipse patch details in 2 dimensions to show contour where pdf >= contour
+	# compute ellipse patch details in 2 dimensions to show contour where weighted pdf >= contour
 	# if data is in dimension d>2, plots are for initial 2 dimensions only
 	# mu (mean) is np.array of shape (d,) or np.array of shape (d,1)
 	# Cov (covariance matrix) is np.array of shape (d,d)

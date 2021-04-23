@@ -35,10 +35,10 @@ def davies_bouldin(X,cluster_assignment):
         avgdistance_cluster_centre.append(np.mean(dist(centre,X[:,idx_cluster])))
     # compute upper triangle of d matrix
     dmat = np.zeros((ncluster,ncluster))
-    for row in range(ncluster):
-        for col in range(row+1,ncluster):
-            dmat[row,col] = avgdistance_cluster_centre[row]+avgdistance_cluster_centre[col]
-            dmat[row,col] = dmat[row,col]/dist(cluster_centre[row],cluster_centre[col])
+    for i in range(ncluster):
+        for j in range(i+1,ncluster):
+            dmat[i,j] = avgdistance_cluster_centre[i]+avgdistance_cluster_centre[j]
+            dmat[i,j] = dmat[i,j]/dist(cluster_centre[i],cluster_centre[j])
     dmat = dmat + dmat.T
     db = np.mean(np.max(dmat,axis=1))
     return db
