@@ -30,6 +30,6 @@ model.plot_cluster(nlevel=0,title="Initial Gaussians & Dataset: "+case,xlabel="F
 model.plot_cluster(nlevel=nlevel,title="Gaussian Mixture Model Dataset: "+case,
 	xlabel="Feature x0", ylabel="Feature x1")
 # animation of cluster assignments and distribution patches
-model.plot_cluster_animation(nlevel=nlevel,interval=500,title="Gaussian Mixture Model Dataset: "+case,
+ani = model.plot_cluster_animation(nlevel=nlevel,interval=500,title="Gaussian Mixture Model Dataset: "+case,
 	xlabel="Feature x0", ylabel="Feature x1")
 plt.show()

@@ -23,6 +23,6 @@ model.plot_cluster(nlevel=0, title="Dataset: "+case, xlabel="Feature x0", ylabel
 model.plot_cluster(nlevel=nlevel, title="DBSCAN Clustering Dataset: "+ case, 
 	xlabel="Feature x0", ylabel="Feature x1")
 # plot animation
-model.plot_cluster_animation(nlevel=nlevel,interval=100,title="DBSCAN Clustering Dataset: "+case,
+ani = model.plot_cluster_animation(nlevel=nlevel,interval=100,title="DBSCAN Clustering Dataset: "+case,
 	xlabel="Feature x0", ylabel="Feature x1")
 plt.show()

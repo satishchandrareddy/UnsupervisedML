@@ -144,3 +144,4 @@ class kmeans(clustering_base.clustering_base):
         # uncomment to create mp4 
         # need to have ffmpeg installed on your machine - search for ffmpeg on internet to get details
         #ani.save('KMeans_Animation.mp4', writer='ffmpeg')
+        return ani

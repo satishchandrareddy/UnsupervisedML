@@ -21,6 +21,6 @@ model.plot_cluster(nlevel=0, title="Dataset: " + case, xlabel="Feature x0", ylab
 model.plot_cluster(nlevel=nlevel, title="Hierarchical Clustering Dataset: " + case, 
 	xlabel="Feature x0", ylabel="Feature x1")
 # plot animation (to level with 3 clusters)
-model.plot_cluster_animation(nlevel=nlevel,interval=100,title="Hierarchical Clustering Dataset: "+case,
+ani = model.plot_cluster_animation(nlevel=nlevel,interval=100,title="Hierarchical Clustering Dataset: "+case,
 	xlabel="Feature x0", ylabel="Feature x1")
 plt.show()

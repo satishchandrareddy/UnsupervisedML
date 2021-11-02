@@ -30,6 +30,6 @@ model.plot_cluster(0,title="Initial Means & Datset: "+case, xlabel="Feature x0",
 model.plot_cluster(nlevel=nlevel,title="K Means Clustering Dataset: "+case,
 	xlabel="Feature x0", ylabel="Feature x1")
 # animation
-model.plot_cluster_animation(nlevel=-1,interval=800,title="K Means Clustering Dataset: "+case,
+ani = model.plot_cluster_animation(nlevel=-1,interval=800,title="K Means Clustering Dataset: "+case,
 	xlabel="Feature x0", ylabel="Feature x1")
 plt.show()
